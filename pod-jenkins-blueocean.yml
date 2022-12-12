@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins-blueocean
+spec:
+  containers:
+    - name: jenkins-blueocean
+      image: docker.io/jenkinsci/blueocean:latest
+      ports:
+        - containerPort: 8080
+          hostPort: 18080
+        - containerPort: 50000
+          hostPort: 50000
+      volumeMounts:
+        - mountPath: /var/jenkins_home
+          name: jenkins-data
+        - mountPath: /certs/client:ro
+          name: jenkins-docker-certs
+  volumes:
+    - name: jenkins-data
+      persistentVolumeClaim:
+        claimName: jenkins-data
+    - name: jenkins-docker-certs
+      persistentVolumeClaim:
+        claimName: jenkins-docker-certs
+
+# podman run   --name jenkins-blueocean   --rm   --detach   --publish 18080:8080   --publish 50000:50000   --volume jenkins-data2:/var/jenkins_home   --volume jenkins-docker-certs2:/certs/client:ro   --tz=local   docker.io/jenkinsci/blueocean:latest    
