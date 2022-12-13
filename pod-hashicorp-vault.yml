@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: vault_local_config
+data:
+  VAULT_LOCAL_CONFIG: |-
+    disable_cache = true
+    disable_mlock = true
+    ui=true
+    default_lease_ttl = "168h"
+    max_lease_ttl = "720h"
+
+    listener "tcp" {
+        address     = "0.0.0.0:8200"
+        tls_disable = 1
+    }
+
+    storage "file" {
+      path = "/vault/file"
+    }
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hashicorp
+spec:
+  containers:
+    - name: vault
+      image: docker.io/hashicorp/vault:latest
+      ports:
+        - containerPort: 8200
+          hostPort: 8200
+      volumeMounts:
+        - mountPath: /vault/logs
+          name: vault-logs
+        - mountPath: /vault/file
+          name: vault-file
+  volumes:
+    - name: vault-logs
+      persistentVolumeClaim:
+        claimName: vault-logs
+    - name: vault-file
+      persistentVolumeClaim:
+        claimName: vault-file
+
+#podman run \
+#  --name vault \
+#  --rm \
+#  --detach \
+#  --publish 8200:8200 \
+#  --volume vault-logs:/vault/logs \
+#  --volume vault-file:/vault/file \
+#  -e 'VAULT_LOCAL_CONFIG={"backend": {"file": {"path": "/vault/file"}}, "default_lease_ttl": "168h", "max_lease_ttl": "720h", "disable_mlock": "true", "listener": {"tcp": {"address": "0.0.0.0:8200", "tls_disable": "1" }}, "ui": "true"}' \
+#  --tz=local \
+#  docker.io/hashicorp/vault:latest server
