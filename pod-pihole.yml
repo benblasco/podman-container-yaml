@@ -6,18 +6,42 @@ spec:
   containers:
     - name: pihole
       image: docker.io/pihole/pihole:latest
+      resources:
+        requests:
+          memory: "512Mi"
+        limits:
+          memory: "512Mi"
       ports:
-        - containerPort: 53
-          hostPort: 53
-        - containerPort: 80
-          hostPort: 80
-        - containerPort: 443
-          hostPort: 443
+      - containerPort: 53
+        hostPort: 53
+        protocol: UDP
+        hostIP: 192.168.1.3
+      - containerPort: 53
+        hostPort: 53
+        protocol: TCP
+        hostIP: 192.168.1.3
+      - containerPort: 80
+        hostPort: 80
+        hostIP: 192.168.1.3
+      - containerPort: 443
+        hostPort: 443
+        hostIP: 192.168.1.3
+      env:
+        - name: TZ
+          value: Australia/Melbourne
       volumeMounts:
         - mountPath: /etc/pihole
           name: pihole-etc
         - mountPath: /etc/dnsmasq.d
           name: pihole-dnsmasq.d
+  # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsPolicy: "None"
+  dnsConfig:
+    nameservers:
+      - 127.0.0.1
+      - 1.1.1.1
+    searches:
+      - lan
   volumes:
     - name: pihole-etc
       persistentVolumeClaim:
