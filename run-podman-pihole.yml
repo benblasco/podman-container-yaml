@@ -1,0 +1,22 @@
+---
+- name: Run the podman system role
+  hosts: all
+  become: yes
+  vars:
+    podman_firewall:
+      - port: 53/tcp
+        state: enabled
+      - port: 53/udp
+        state: enabled
+      - port: 80/tcp
+        state: enabled
+      - port: 443/tcp
+        state: enabled
+    podman_kube_specs:
+      - state: started
+        run_as_user: root
+        run_as_group: root
+        kube_file_src: pod-pihole.yml
+  roles:
+    - fedora.linux_system_roles.podman
+
