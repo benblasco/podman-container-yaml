@@ -16,6 +16,9 @@ spec:
           name: jenkins-data
         - mountPath: /certs/client:ro
           name: jenkins-docker-certs
+      env:
+        - name: TZ
+          value: Australia/Melbourne
   volumes:
     - name: jenkins-data
       persistentVolumeClaim:

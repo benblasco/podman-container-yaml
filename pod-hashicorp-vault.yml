@@ -35,6 +35,9 @@ spec:
           name: vault-logs
         - mountPath: /vault/file
           name: vault-file
+      env:
+        - name: TZ
+          value: Australia/Melbourne
   volumes:
     - name: vault-logs
       persistentVolumeClaim:
