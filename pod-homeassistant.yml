@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homeassistant
+spec:
+  containers:
+    - name: homeassistant
+      image: ghcr.io/home-assistant/home-assistant:stable
+      ports:
+        - containerPort: 8123
+          hostPort: 8123
+      volumeMounts:
+        - mountPath: /config
+          name: homeassistant-config
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+  volumes:
+    - name: homeassistant-config
+      persistentVolumeClaim:
+        claimName: homeassistant-config

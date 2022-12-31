@@ -1,0 +1,22 @@
+---
+- name: Run the podman system role
+  hosts: all
+  become: yes
+  vars:
+    podman_firewall:
+      - port: 8123/tcp
+        state: enabled
+    #podman_create_host_directories: true
+    #podman_host_directories:
+      #"ubi8-html":
+        #owner: ansible
+        #group: ansible
+        #mode: "0755"
+    podman_kube_specs:
+      - state: started
+        run_as_user: bblasco
+        run_as_group: bblasco
+        kube_file_src: pod-homeassistant.yml
+  roles:
+    - fedora.linux_system_roles.podman
+
