@@ -3,6 +3,7 @@ kind: Pod
 metadata:
   name: homeassistant
 spec:
+  #hostUsers: false
   containers:
     - name: homeassistant
       image: ghcr.io/home-assistant/home-assistant:stable
@@ -12,6 +13,10 @@ spec:
       volumeMounts:
         - mountPath: /config
           name: homeassistant-config
+        # DBUS required for Bluetooth to work
+        - mountPath: /run/dbus
+          name: run-dbus
+          readOnly: true
       env:
         - name: TZ
           value: Australia/Melbourne
@@ -19,3 +24,7 @@ spec:
     - name: homeassistant-config
       persistentVolumeClaim:
         claimName: homeassistant-config
+    - name: run-dbus
+      hostPath:
+        path: /run/dbus
+        readOnly: true
