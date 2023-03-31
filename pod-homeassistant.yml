@@ -17,6 +17,8 @@ spec:
         - mountPath: /run/dbus
           name: run-dbus
           readOnly: true
+        - mountPath: /var/run/dbus
+          name: var-run-dbus
       env:
         - name: TZ
           value: Australia/Melbourne
@@ -28,3 +30,6 @@ spec:
       hostPath:
         path: /run/dbus
         readOnly: true
+    - name: var-run-dbus
+      hostPath:
+        path: /var/run/dbus
