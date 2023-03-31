@@ -14,6 +14,8 @@
         state: enabled
     podman_kube_specs:
       - state: started
+        #debug: true
+        #log_level: debug
         run_as_user: root
         run_as_group: root
         kube_file_src: pod-pihole.yml
