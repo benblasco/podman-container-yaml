@@ -1,0 +1,63 @@
+# Run via the following command:
+# podman kube play --userns=keep-id pod-h3.yml 
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: h3
+spec:
+  #hostUsers: false
+  containers:
+    - name: h3
+      image: ghcr.io/home-assistant/home-assistant:stable
+      ports:
+        - containerPort: 8123
+          hostPort: 8123
+      volumeMounts:
+        - mountPath: /config
+          name: h3-config
+        # DBUS required for Bluetooth to work
+        - mountPath: /run/dbus
+          name: run-dbus
+          readOnly: true
+        - mountPath: /var/run/dbus
+          name: var-run-dbus
+#        - mountPath: /dev/bus
+#          name: dev-bus
+#        - mountPath: /run/user
+#          name: run-user
+#        - mountPath: /etc/dbus-1
+#          name: etc-dbus-1
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities: {}
+        privileged: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        #fsGroup: 1000
+        #fsGroupChangePolicy: "Always"
+
+  volumes:
+    - name: h3-config
+      persistentVolumeClaim:
+        claimName: h3-config
+    - name: run-dbus
+      hostPath:
+        path: /run/dbus
+        readOnly: true
+    - name: var-run-dbus
+      hostPath:
+        path: /var/run/dbus
+#    - name: dev-bus
+#      hostPath:
+#        path: /dev/bus
+#    - name: run-user
+#      hostPath:
+#        path: /run/user
+#    - name: etc-dbus-1
+#      hostPath:
+#        path: /etc/dbus-1
+#        readOnly: true
