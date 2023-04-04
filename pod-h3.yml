@@ -32,7 +32,7 @@ spec:
         - name: TZ
           value: Australia/Melbourne
       securityContext:
-        allowPrivilegeEscalation: true
+        #allowPrivilegeEscalation: true
         capabilities: {}
         privileged: true
         runAsUser: 1000
