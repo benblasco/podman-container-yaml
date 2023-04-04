@@ -7,9 +7,9 @@ spec:
   containers:
     - name: h2
       image: ghcr.io/home-assistant/home-assistant:stable
-        #ports:
+      #ports:
         #- containerPort: 8123
-        #hostPort: 8123
+        #  hostPort: 8123
       volumeMounts:
         - mountPath: /config
           name: h2-config
@@ -19,6 +19,12 @@ spec:
           readOnly: true
         - mountPath: /var/run/dbus
           name: var-run-dbus
+        - mountPath: /dev/bus
+          name: dev-bus
+        - mountPath: /run/user
+          name: run-user
+        - mountPath: /etc/dbus-1
+          name: etc-dbus-1
       env:
         - name: TZ
           value: Australia/Melbourne
@@ -26,8 +32,10 @@ spec:
         allowPrivilegeEscalation: true
         capabilities: {}
         privileged: true
-          #runAsUser: 1000
-          #runAsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+        #fsGroup: 1000
+        #fsGroupChangePolicy: "Always"
 
   volumes:
     - name: h2-config
@@ -40,3 +48,13 @@ spec:
     - name: var-run-dbus
       hostPath:
         path: /var/run/dbus
+    - name: dev-bus
+      hostPath:
+        path: /dev/bus
+    - name: run-user
+      hostPath:
+        path: /run/user
+    - name: etc-dbus-1
+      hostPath:
+        path: /etc/dbus-1
+        readOnly: true
