@@ -1,5 +1,5 @@
 # Run via the following command:
-# podman kube play --userns=keep-id pod-h3.yml 
+# podman kube play --userns=keep-id --network=host pod-h3.yml 
 #
 apiVersion: v1
 kind: Pod
@@ -10,9 +10,9 @@ spec:
   containers:
     - name: h3
       image: ghcr.io/home-assistant/home-assistant:stable
-      ports:
-        - containerPort: 8123
-          hostPort: 8123
+#      ports:
+#        - containerPort: 8123
+#          hostPort: 8123
       volumeMounts:
         - mountPath: /config
           name: h3-config
