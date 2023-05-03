@@ -1,3 +1,6 @@
+# Run via the following command:
+# podman kube play --userns=keep-id --network=host pod-homeassistant.yml 
+#
 apiVersion: v1
 kind: Pod
 metadata:
@@ -7,9 +10,9 @@ spec:
   containers:
     - name: homeassistant
       image: ghcr.io/home-assistant/home-assistant:stable
-      ports:
-        - containerPort: 8123
-          hostPort: 8123
+#      ports:
+#        - containerPort: 8123
+#          hostPort: 8123
       volumeMounts:
         - mountPath: /config
           name: homeassistant-config
@@ -22,6 +25,15 @@ spec:
       env:
         - name: TZ
           value: Australia/Melbourne
+      securityContext:
+        #allowPrivilegeEscalation: true
+        capabilities: {}
+        privileged: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        #fsGroup: 1000
+        #fsGroupChangePolicy: "Always"
+
   volumes:
     - name: homeassistant-config
       persistentVolumeClaim:
