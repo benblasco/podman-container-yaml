@@ -29,7 +29,8 @@ Also great info if you run `man podman-systemd.unit`
 3. Run `loginctl enable-linger <user>`
 4. Check that lingering is enabled `loginctl show-user <user>`
 5. Run `systemctl --user daemon-reload`
-6. Check the service with `systemctl --user status <filename>.service
+6. Check the service with `systemctl --user status <filename>.service`
+7. Don't forget to enable any firewall ports that need to be enabled
 
 # Ben's Home Assistant container Bluetooth config
 
