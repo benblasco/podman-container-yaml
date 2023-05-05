@@ -15,17 +15,17 @@ spec:
       - containerPort: 53
         hostPort: 53
         protocol: UDP
-        hostIP: 192.168.1.3
+        hostIP: 192.168.1.7
       - containerPort: 53
         hostPort: 53
         protocol: TCP
-        hostIP: 192.168.1.3
+        hostIP: 192.168.1.7
       - containerPort: 80
         hostPort: 80
-        hostIP: 192.168.1.3
+        hostIP: 192.168.1.7
       - containerPort: 443
         hostPort: 443
-        hostIP: 192.168.1.3
+        hostIP: 192.168.1.7
       env:
         - name: TZ
           value: Australia/Melbourne
@@ -38,7 +38,7 @@ spec:
   dnsPolicy: "None"
   dnsConfig:
     nameservers:
-      - 127.0.0.1
+      #- 127.0.0.1
       - 1.1.1.1
     searches:
       - lan
