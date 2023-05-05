@@ -1,0 +1,11 @@
+[Unit]
+Description=A kubernetes yaml based service
+Before=local-fs.target
+After=network-online.target
+
+[Kube]
+Yaml=/home/bblasco/git/podman-container-yaml/pod-pihole.yml
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
