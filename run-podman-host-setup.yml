@@ -14,6 +14,22 @@
         state: enabled
       - port: 80/tcp
         state: enabled
+      # Jenkins-blueocean
+      - port: 18080/tcp
+        state: enabled
+      - port: 50000/tcp
+        state: enabled
+      # Unifi
+      - port: 8080/tcp
+        state: enabled
+      - port: 8443/tcp
+        state: enabled
+      - port: 3478/tcp
+        state: enabled
+      - port: 10001/tcp
+        state: enabled
+      - port: 5514/tcp
+        state: enabled
   roles:
     - fedora.linux_system_roles.podman
 
