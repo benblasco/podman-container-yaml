@@ -1,7 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: vault_local_config
+  name: vault_local_config
+  labels:
+    io.containers.autoupdate: "registry"
 data:
   VAULT_LOCAL_CONFIG: |-
     disable_cache = true

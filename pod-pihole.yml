@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: pihole
+  labels:
+    io.containers.autoupdate: "registry"
 spec:
   containers:
     - name: pihole
