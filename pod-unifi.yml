@@ -49,6 +49,20 @@ spec:
       volumeMounts:
         - mountPath: /unifi
           name: unifi
+      # Note I wasn't able to make AP adoption work without adding
+      # the security context set below
+      # Inspiration courtesy link below:
+      # https://github.com/jwillikers/unifi-controller/blob/main/unifi-controller.yml
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          drop:
+            - CAP_MKNOD
+            - CAP_NET_RAW
+            - CAP_AUDIT_WRITE
+        privileged: false
+        readOnlyRootFilesystem: false
+        seLinuxOptions: {}
   # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
   dnsPolicy: "None"
   dnsConfig:
