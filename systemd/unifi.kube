@@ -1,0 +1,11 @@
+[Unit]
+Description=Unifi controller container run by Podman
+Before=local-fs.target
+After=network-online.target
+
+[Kube]
+Yaml=/home/bblasco/git/podman-container-yaml/pod-unifi.yml
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
