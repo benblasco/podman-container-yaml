@@ -24,11 +24,15 @@
         state: enabled
       - port: 8443/tcp
         state: enabled
+      - port: 3478/udp
+        state: enabled
       - port: 3478/tcp
+        state: enabled
+      - port: 10001/udp
         state: enabled
       - port: 10001/tcp
         state: enabled
-      - port: 5514/tcp
+      - port: 5514/udp
         state: enabled
   roles:
     - fedora.linux_system_roles.podman
