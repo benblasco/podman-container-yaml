@@ -1,5 +1,5 @@
 [Unit]
-Description=A kubernetes yaml based service
+Description=Pi-hole container run by Podman
 Before=local-fs.target
 After=network-online.target
 

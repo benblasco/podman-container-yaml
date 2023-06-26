@@ -1,5 +1,5 @@
 [Unit]
-Description=A kubernetes yaml based service
+Description=Jenkins Blueocean container run by Podman
 Before=local-fs.target
 
 [Kube]
