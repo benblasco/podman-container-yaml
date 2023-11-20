@@ -10,6 +10,6 @@
       - state: started
         run_as_user: bblasco
         run_as_group: bblasco
-        kube_file_src: pod-uptime-kuma.yml
+        kube_file_src: pod/pod-uptime-kuma.yml
   roles:
     - fedora.linux_system_roles.podman
