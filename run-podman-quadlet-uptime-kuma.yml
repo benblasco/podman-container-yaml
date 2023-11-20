@@ -1,0 +1,21 @@
+---
+- name: Run the podman system role
+  hosts: all
+  become: yes
+  vars:
+    podman_firewall:
+      - port: 3001/tcp
+        state: enabled
+    podman_quadlet_specs:
+      # The yml files need to be defined before
+      # the kube file that references them.
+      # The other directives need to be under
+      # the kube file_src else this does not work!
+      - file_src: pod/pod-uptime-kuma.yml
+      - file_src: kube/uptime-kuma.kube
+        state: started
+        #activate_systemd_unit: true
+        run_as_user: bblasco
+        run_as_group: bblasco
+  roles:
+    - fedora.linux_system_roles.podman
