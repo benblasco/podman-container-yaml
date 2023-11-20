@@ -3,6 +3,8 @@
   hosts: all
   become: yes
   vars:
+    podman_run_as_user: bblasco
+    podman_run_as_group: bblasco
     podman_firewall:
       - port: 3001/tcp
         state: enabled
@@ -14,8 +16,5 @@
       - file_src: pod/pod-uptime-kuma.yml
       - file_src: kube/uptime-kuma.kube
         state: started
-        #activate_systemd_unit: true
-        run_as_user: bblasco
-        run_as_group: bblasco
   roles:
     - fedora.linux_system_roles.podman
