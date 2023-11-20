@@ -1,9 +1,1 @@
 localhost ansible_connection=local
-#localhost
-cubox ansible_host=eraser215.ddns.net ansible_user=eblaben ansible_port=49152
-#cubox ansible_host=192.168.1.2 ansible_user=eblaben ansible_port=22
-# ansible_ssh_pass=ansible
-pi4.lan
-nuc.lan
-micro.lan
-opti.lan
