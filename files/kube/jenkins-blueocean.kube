@@ -1,0 +1,10 @@
+[Unit]
+Description=Jenkins Blueocean container run by Podman
+Before=local-fs.target
+
+[Kube]
+Yaml=pod-jenkins-blueocean.yml
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
