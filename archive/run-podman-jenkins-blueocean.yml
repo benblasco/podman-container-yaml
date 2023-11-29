@@ -1,0 +1,18 @@
+---
+- name: Run the podman system role
+  hosts: all
+  become: yes
+  vars:
+    podman_firewall:
+      - port: 18080/tcp
+        state: enabled
+      - port: 50000/tcp
+        state: enabled
+    podman_kube_specs:
+      - state: started
+        run_as_user: bblasco
+        run_as_group: bblasco
+        kube_file_src: pod-jenkins-blueocean.yml
+  roles:
+    - fedora.linux_system_roles.podman
+
