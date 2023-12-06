@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pihole
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: pihole
+      image: docker.io/pihole/pihole:latest
+      resources:
+        requests:
+          memory: "512Mi"
+        limits:
+          memory: "512Mi"
+      ports:
+      - containerPort: 53
+        hostPort: 53
+        protocol: UDP
+        hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+      - containerPort: 53
+        hostPort: 53
+        protocol: TCP
+        hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+      - containerPort: 80
+        hostPort: 80
+        hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+      - containerPort: 443
+        hostPort: 443
+        hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      volumeMounts:
+        - mountPath: /etc/pihole
+          name: pihole-etc
+        - mountPath: /etc/dnsmasq.d
+          name: pihole-dnsmasq.d
+  # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsPolicy: "None"
+  dnsConfig:
+    nameservers:
+      #- 127.0.0.1
+      - 1.1.1.1
+    searches:
+      - lan
+  volumes:
+    - name: pihole-etc
+      persistentVolumeClaim:
+        claimName: pihole-etc
+    - name: pihole-dnsmasq.d
+      persistentVolumeClaim:
+        claimName: pihole-dnsmasq.d

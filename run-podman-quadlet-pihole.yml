@@ -1,0 +1,29 @@
+---
+- name: Run the podman system role
+  hosts: all
+  become: yes
+  vars:
+    podman_run_as_user: root
+    podman_run_as_group: root
+    podman_firewall:
+      - port: 53/tcp
+        state: enabled
+      - port: 53/udp
+        state: enabled
+      - port: 80/tcp
+        state: enabled
+      - port: 443/tcp
+        state: enabled
+    podman_quadlet_specs:
+      # The yml files need to be defined before
+      # the kube file that references them.
+      # The other directives need to be under
+      # the kube file_src else this does not work!
+      #
+      # Note: template_src points to files under templates/
+      # Note: file_src points to files under files/
+      - template_src: pod/pod-pihole.yml.j2
+      - file_src: kube/pihole.kube
+        state: started
+  roles:
+    - fedora.linux_system_roles.podman
