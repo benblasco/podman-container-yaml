@@ -1,0 +1,22 @@
+---
+- name: Run the podman system role
+  hosts: all
+  become: yes
+  vars:
+    podman_run_as_user: bblasco
+    podman_run_as_group: bblasco
+    podman_firewall:
+      - port: 8200/tcp
+        state: enabled
+    podman_quadlet_specs:
+      # The yml files need to be defined before
+      # the kube file that references them.
+      # The other directives need to be under
+      # the kube file_src else this does not work!
+      - file_src: pod/pod-hashicorp-vault.yml
+        #state: absent
+      - file_src: kube/hashicorp-vault.kube
+        state: started
+          #state: absent
+  roles:
+    - fedora.linux_system_roles.podman
