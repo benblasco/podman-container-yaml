@@ -1,6 +1,6 @@
 [Unit]
 Description=Pi-hole container run by Podman
-Before=local-fs.target
+#Before=local-fs.target
 After=network.target
 
 [Kube]
