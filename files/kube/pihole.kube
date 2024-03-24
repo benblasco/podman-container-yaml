@@ -1,7 +1,7 @@
 [Unit]
 Description=Pi-hole container run by Podman
 #Before=local-fs.target
-After=network.target
+After=network-online.target
 
 [Kube]
 Yaml=pod-pihole.yml
