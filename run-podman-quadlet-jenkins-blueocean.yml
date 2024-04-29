@@ -18,7 +18,5 @@
       - file_src: pod/pod-jenkins-blueocean.yml
         #state: absent
       - file_src: kube/jenkins-blueocean.kube
-        state: started
-          #state: absent
   roles:
     - fedora.linux_system_roles.podman

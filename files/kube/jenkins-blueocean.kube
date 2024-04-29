@@ -5,6 +5,7 @@ Before=local-fs.target
 [Kube]
 Yaml=pod-jenkins-blueocean.yml
 
-[Install]
-# Start by default on boot
-WantedBy=multi-user.target default.target
+# Commented out "Install" section so it does not start on boot
+#[Install]
+## Start by default on boot
+#WantedBy=multi-user.target default.target
