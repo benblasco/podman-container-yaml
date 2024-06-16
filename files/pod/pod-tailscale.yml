@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tailscale
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: tailscale
+      image: docker.io/tailscale/tailscale:stable
+      #ports:
+        #- containerPort: 3001
+          #hostPort: 3001
+      volumeMounts:
+        - mountPath: /var/lib
+          name: tailscale-var-lib
+        - mountPath: /dev/net/tun
+          name: tailscale-dev-net-tun
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        - name: TS_AUTHKEY
+          value: tskey-auth-ab1CDE2CNTRL-0123456789abcdef
+        - name: TS_EXTRA_ARGS
+          #value: --advertise-tags=tag:container --advertise-exit-node
+          value: --hostname=tailscale-micro --advertise-exit-node
+        - name: TS_ROUTES
+          value: 192.168.1.0/24,192.168.3.0/24,192.168.6.0/24
+        - name: TS_STATE_DIR
+          value: /var/lib/tailscale
+      securityContext:
+        #allowPrivilegeEscalation: true
+        capabilities:
+          #drop:
+            #- CAP_MKNOD
+            #- CAP_NET_RAW
+            #- CAP_AUDIT_WRITE
+          add:
+            - CAP_NET_ADMIN
+            - CAP_NET_RAW
+            - CAP_SYS_MODULE
+        privileged: false
+
+  volumes:
+    - name: tailscale-var-lib
+      persistentVolumeClaim:
+        claimName: tailscale-var-lib
+    - name: tailscale-dev-net-tun
+      hostPath:
+        path: /dev/net/tun
+        type: CharDevice
+
+# https://github.com/tailscale/tailscale/issues/10814
+# docker run -d --name=tailscaled -v /var/lib:/var/lib -v /dev/net/tun:/dev/net/tun --network=host --cap-add=NET_ADMIN --cap-add=NET_RAW --env TS_AUTHKEY=tskey-auth-ab1CDE2CNTRL-0123456789abcdef tailscale/tailscale

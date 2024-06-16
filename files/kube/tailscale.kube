@@ -1,0 +1,11 @@
+[Unit]
+Description=Tailscale container run by Podman
+Before=local-fs.target
+After=network.target
+
+[Kube]
+Yaml=pod-tailscale.yml
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
