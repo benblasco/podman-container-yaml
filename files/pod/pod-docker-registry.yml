@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: docker-registry
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: docker-registry
+      image: docker.io/registry:2
+      ports:
+        - containerPort: 5000
+          hostPort: 5000
+      volumeMounts:
+        - mountPath: /var/lib/registry
+          name: docker-registry-var-lib-registry
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        - name: REGISTRY_STORAGE_DELETE_ENABLED
+          value: true
+  volumes:
+    - name: docker-registry-var-lib-registry
+      persistentVolumeClaim:
+        claimName: docker-registry-var-lib-registry
+
+# podman run -d --restart=always -p 5000:5000 -v docker-registry-var-lib-registry:/var/lib/registry --name docker-registry docker.io/registry:2

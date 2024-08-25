@@ -1,0 +1,11 @@
+[Unit]
+Description=Docker Registry container run by Podman
+Before=local-fs.target
+After=network.target
+
+[Kube]
+Yaml=pod-docker-registry.yml
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
