@@ -14,14 +14,26 @@ spec:
       volumeMounts:
         - mountPath: /var/lib/registry
           name: docker-registry-var-lib-registry
+        - mountPath: /certs:z
+          name: certs
+          readonly: true
       env:
         - name: TZ
           value: Australia/Melbourne
         - name: REGISTRY_STORAGE_DELETE_ENABLED
           value: true
+        - name: REGISTRY_HTTP_TLS_CERTIFICATE
+          value: /certs/certs/micro.blasco.id.au-fullchain.crt
+        - name: REGISTRY_HTTP_TLS_KEY
+          value: /certs/keys/micro.blasco.id.au.key
   volumes:
     - name: docker-registry-var-lib-registry
       persistentVolumeClaim:
         claimName: docker-registry-var-lib-registry
+    - name: certs
+      #volumeMode: Filesystem
+      hostPath:
+        path: /home/bblasco/letsencrypt
+        type: Directory
 
-# podman run -d --restart=always -p 5000:5000 -v docker-registry-var-lib-registry:/var/lib/registry --name docker-registry docker.io/registry:2
+        # podman run -d --restart=always -p 5000:5000 -v docker-registry-var-lib-registry:/var/lib/registry /etc/letsencrypt:/certs:z:ro--name docker-registry docker.io/registry:2
