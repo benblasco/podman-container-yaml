@@ -1,0 +1,49 @@
+# Run via the following command:
+# podman kube play --userns=keep-id --network=host pod-homeassistant.yml 
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homeassistant
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  #hostUsers: false
+  containers:
+    - name: homeassistant
+      image: ghcr.io/home-assistant/home-assistant:stable
+#      ports:
+#        - containerPort: 8123
+#          hostPort: 8123
+      volumeMounts:
+        - mountPath: /config
+          name: homeassistant-config
+        # DBUS required for Bluetooth to work
+        - mountPath: /run/dbus
+          name: run-dbus
+          readOnly: true
+        - mountPath: /var/run/dbus
+          name: var-run-dbus
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        #allowPrivilegeEscalation: true
+        capabilities: {}
+        privileged: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        #fsGroup: 1000
+        #fsGroupChangePolicy: "Always"
+
+  volumes:
+    - name: homeassistant-config
+      persistentVolumeClaim:
+        claimName: homeassistant-config
+    - name: run-dbus
+      hostPath:
+        path: /run/dbus
+        readOnly: true
+    - name: var-run-dbus
+      hostPath:
+        path: /var/run/dbus

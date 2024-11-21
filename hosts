@@ -10,4 +10,4 @@ opti.lan
 ospi.lan ansible_user=pi
 
 [all:vars]
-ansible_ssh_common_args='-o ProxyCommand="ssh -p 49152 -W %h:%p -q eblaben@eraser215.ddns.net"'
+ansible_ssh_common_args='-o ProxyCommand="ssh -p 49153 -W %h:%p -q bblasco@eraser215.ddns.net"'

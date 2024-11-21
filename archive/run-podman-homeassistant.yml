@@ -1,6 +1,6 @@
 ---
 - name: Run the podman system role
-  hosts: all
+  hosts: opti.lan
   become: yes
   vars:
     podman_firewall:
