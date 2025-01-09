@@ -23,9 +23,22 @@ spec:
         - name: REGISTRY_STORAGE_DELETE_ENABLED
           value: true
         - name: REGISTRY_HTTP_TLS_CERTIFICATE
-          value: /certs/certs/micro.blasco.id.au-fullchain.crt
+          #value: /certs/certs/micro.blasco.id.au-fullchain.crt
+          value: /certs/certs/self-ssl.crt
         - name: REGISTRY_HTTP_TLS_KEY
-          value: /certs/keys/micro.blasco.id.au.key
+          #value: /certs/keys/micro.blasco.id.au.key
+          value: /certs/keys/self-ssl.key
+        - name: REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin
+          value: '[http://micro.lan:8000]'
+        - name: REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods
+          value: '[HEAD,GET,OPTIONS,DELETE]'
+        - name: REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials
+          value: '[true]'
+        - name: REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers
+          value: '[Authorization,Accept,Cache-Control]'
+        - name: REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers
+          value: '[Docker-Content-Digest]'
+
   volumes:
     - name: docker-registry-var-lib-registry
       persistentVolumeClaim:
