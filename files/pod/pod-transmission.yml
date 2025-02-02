@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: transmission
+  labels:
+    io.containers.autoupdate: "registry"
+  #annotations:
+    # https://www.redhat.com/en/blog/debug-rootless-podman-mounted-volumes
+    #run.oci.keep_original_groups: 1
+spec:
+  containers:
+    - name: transmission
+      image: lscr.io/linuxserver/transmission:latest
+      ports:
+        - containerPort: 9091
+          hostPort: 9091
+        - containerPort: 51413
+          hostPort: 51413
+        - containerPort: 51413
+          hostPort: 51413
+          protocol: UDP
+      volumeMounts:
+        - mountPath: /config
+          name: transmission-config
+        - mountPath: /downloads
+          name: transmission-downloads
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        # Set the following permission to allow reading of host's
+        # downloads dir (the hostPath mount).
+        # This is not a good practice
+        # Read more here:
+        # https://github.com/containers/podman/issues/3683
+        # Udica is possibly a better solution for creating policies
+        # relating to containers
+        privileged: true
+
+  volumes:
+    - name: transmission-config
+      persistentVolumeClaim:
+        claimName: transmission-config
+    - name: transmission-downloads
+      #volumeMode: Filesystem
+      hostPath:
+        path: /mnt/sg1/media/torrents
+        type: Directory
+
+
+# https://hub.docker.com/r/linuxserver/transmission
+# docker run -d \
+# --name=transmission \
+# -e PUID=1000 \
+# -e PGID=1000 \
+# -e TZ=Etc/UTC \
+# -e TRANSMISSION_WEB_HOME= `#optional` \
+# -e USER= `#optional` \
+# -e PASS= `#optional` \
+# -e WHITELIST= `#optional` \
+# -e PEERPORT= `#optional` \
+# -e HOST_WHITELIST= `#optional` \
+# -p 9091:9091 \
+# -p 51413:51413 \
+# -p 51413:51413/udp \
+# -v /path/to/transmission/data:/config \
+# -v /path/to/downloads:/downloads `#optional` \
+# -v /path/to/watch/folder:/watch `#optional` \
+# --restart unless-stopped \
+# lscr.io/linuxserver/transmission:latest
+

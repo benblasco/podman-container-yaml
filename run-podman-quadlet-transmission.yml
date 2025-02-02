@@ -1,0 +1,24 @@
+---
+- name: Run the podman system role
+  hosts: micro.lan
+  become: yes
+  vars:
+    podman_run_as_user: media
+    podman_run_as_group: media
+    podman_firewall:
+      - port: 9091/tcp
+        state: enabled
+      - port: 51413/tcp
+        state: enabled
+      - port: 51413/udp
+        state: enabled
+    podman_quadlet_specs:
+      # The yml files need to be defined before
+      # the kube file that references them.
+      # The other directives need to be under
+      # the kube file_src else this does not work!
+      - file_src: pod/pod-transmission.yml
+      - file_src: kube/transmission.kube
+        state: started
+  roles:
+    - fedora.linux_system_roles.podman
