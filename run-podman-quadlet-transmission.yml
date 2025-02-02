@@ -22,3 +22,4 @@
         state: started
   roles:
     - fedora.linux_system_roles.podman
+# Note: There's a reference config settings.json file under files/transmission
