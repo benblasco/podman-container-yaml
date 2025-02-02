@@ -15,6 +15,11 @@
       # the kube file_src else this does not work!
       - file_src: pod/pod-homeassistant.yml
       - file_src: kube/homeassistant.kube
-        state: started
+        # Setting the state to created because we have to
+        # change ownership of files in volumes due to this bug
+        # when using userns=keep-id:
+        # "podman run is not honoring --userns=keep-id --user=1000:1000 settings while creating volumes"
+        # https://github.com/containers/podman/issues/16741
+        state: created
   roles:
     - fedora.linux_system_roles.podman
