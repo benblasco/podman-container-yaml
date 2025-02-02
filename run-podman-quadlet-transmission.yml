@@ -1,5 +1,6 @@
 ---
-- name: Run the podman system role
+- name: Run the podman system role to install Transmission torrent client
+  # https://hub.docker.com/r/linuxserver/transmission
   hosts: micro.lan
   become: yes
   vars:
