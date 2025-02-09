@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: unifi
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: unifi
+      image: docker.io/jacobalberty/unifi:latest
+      resources:
+        requests:
+          memory: "2048Mi"
+        limits:
+          memory: "2048Mi"
+      ports:
+        - containerPort: 8080
+          hostPort: 8080
+          protocol: TCP
+          #hostIP: 192.168.1.7
+        - containerPort: 8443
+          hostPort: 8443
+          protocol: TCP
+          #hostIP: 192.168.1.7
+        - containerPort: 3478
+          hostPort: 3478
+          protocol: UDP
+          #hostIP: 192.168.1.7
+        - containerPort: 10001
+          hostPort: 10001
+          protocol: UDP
+          #hostIP: 192.168.1.7
+        - containerPort: 5514
+          hostPort: 5514
+          protocol: UDP
+          #hostIP: 192.168.1.7
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        # The UID and GUID below appear to be redundant
+        # Inherited from ikke_t's config at:
+        # https://github.com/ikke-t/ansible-podman-examples
+        - name: UNIFI_UID
+          value: "1111"
+        - name: UNIFI_GID
+          value: "1111"
+        - name: RUNAS_UID0
+          value: "false"
+      volumeMounts:
+        - mountPath: /unifi
+          name: unifi
+      # Note I wasn't able to make AP adoption work without adding
+      # the security context set below
+      # Inspiration courtesy link below:
+      # https://github.com/jwillikers/unifi-controller/blob/main/unifi-controller.yml
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          #drop:
+            #- CAP_MKNOD
+            #- CAP_NET_RAW
+            #- CAP_AUDIT_WRITE
+          add:
+            - CAP_NET_ADMIN
+        privileged: false
+        readOnlyRootFilesystem: false
+        seLinuxOptions: {}
+  # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+#  dnsPolicy: "None"
+#  dnsConfig:
+#    nameservers:
+#      - 192.168.1.7
+#      - 192.168.1.6
+#    searches:
+#      - lan
+  volumes:
+    - name: unifi
+      persistentVolumeClaim:
+        claimName: unifi

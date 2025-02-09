@@ -1,0 +1,11 @@
+[Unit]
+Description=Ubiquiti Unifi controller container run by Podman
+#Before=local-fs.target
+After=network-online.target
+
+[Kube]
+Yaml=pod-unifi.yml
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
