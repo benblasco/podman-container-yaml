@@ -25,10 +25,10 @@ spec:
           value: true
         - name: SHOW_CONTENT_DIGEST
           value: true
-        - name: REGISTRY_URL
-          value: https://micro.lan:5000
-        #- name: NGINX_PROXY_PASS_URL
+        #- name: REGISTRY_URL
           #value: https://micro.lan:5000
+        - name: NGINX_PROXY_PASS_URL
+          value: https://micro.lan:5000
         - name: SHOW_CATALOG_NB_TAGS
           value: true
         - name: CATALOG_MIN_BRANCHES
