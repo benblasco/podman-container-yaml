@@ -28,6 +28,7 @@ openssl req -new -key self-ssl.key -out self-ssl.csr
 ```
 
 Create the OpenSSL X509v3 extensions file with Subject Alternative Names:
+```
 cat <<EOF > myserver.cnf
 authorityKeyIdentifier=keyid,issuer
 keyUsage=digitalSignature
@@ -38,11 +39,11 @@ subjectAltName = @alt_names
 DNS.1 = myserver.example.com             # change with the mirror FQDN e.g. micro.lan
 DNS.2 = myserver                         # change with the mirror hostname e.g micro
 EOF
+```
 
 Generate the certificate using the CSR, the extension file and the key
 Enter the same passphrase as above when prompted.
 ```
-openssl x509 -req -days 365 -in self-ssl.csr -signkey self-ssl.key -out self-ssl.crt
 openssl x509 -req -days 365 -in self-ssl.csr -extfile myserver.cnf -signkey self-ssl.key -out self-ssl.crt
 ```
 
