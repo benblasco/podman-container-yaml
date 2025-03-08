@@ -1,6 +1,6 @@
 ---
 - name: Run the podman system role
-  hosts: micro.lan
+  hosts: micro.lan,nuc.lan
   become: yes
   vars:
     podman_run_as_user: bblasco
