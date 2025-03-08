@@ -15,18 +15,18 @@ spec:
           hostPort: 50000
       volumeMounts:
         - mountPath: /var/jenkins_home
-          name: jenkins-data2
+          name: jenkins-data
         - mountPath: /certs/client:ro
-          name: jenkins-docker-certs2
+          name: jenkins-docker-certs
       env:
         - name: TZ
           value: Australia/Melbourne
   volumes:
-    - name: jenkins-data2
+    - name: jenkins-data
       persistentVolumeClaim:
-        claimName: jenkins-data2
-    - name: jenkins-docker-certs2
+        claimName: jenkins-data
+    - name: jenkins-docker-certs
       persistentVolumeClaim:
-        claimName: jenkins-docker-certs2
+        claimName: jenkins-docker-certs
 
-# podman run   --name jenkins-blueocean   --rm   --detach   --publish 18080:8080   --publish 50000:50000   --volume jenkins-data2:/var/jenkins_home   --volume jenkins-docker-certs2:/certs/client:ro   --tz=local   docker.io/jenkinsci/blueocean:latest    
+# podman run   --name jenkins-blueocean   --rm   --detach   --publish 18080:8080   --publish 50000:50000   --volume jenkins-data:/var/jenkins_home   --volume jenkins-docker-certs:/certs/client:ro   --tz=local   docker.io/jenkinsci/blueocean:latest    
