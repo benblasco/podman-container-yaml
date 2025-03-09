@@ -29,7 +29,7 @@ spec:
           #value: /certs/keys/micro.blasco.id.au.key
           value: /certs/keys/self-ssl.key
         - name: REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin
-          value: '[http://micro.lan:8000]'
+          value: "[http://{{ inventory_hostname }}:8000]"
         - name: REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods
           value: '[HEAD,GET,OPTIONS,DELETE]'
         - name: REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials

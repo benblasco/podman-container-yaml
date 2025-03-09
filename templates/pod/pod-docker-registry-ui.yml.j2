@@ -28,7 +28,7 @@ spec:
         #- name: REGISTRY_URL
           #value: https://micro.lan:5000
         - name: NGINX_PROXY_PASS_URL
-          value: https://micro.lan:5000
+          value: "https://{{ inventory_hostname }}:5000"
         - name: SHOW_CATALOG_NB_TAGS
           value: true
         - name: CATALOG_MIN_BRANCHES
