@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homepage
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: homepage
+      image: ghcr.io/gethomepage/homepage:latest
+      ports:
+        - containerPort: 3000
+          hostPort: 3000
+      volumeMounts:
+        - mountPath: /app/config
+          name: homepage-config
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: '*'
+  volumes:
+    - name: homepage-config
+      persistentVolumeClaim:
+        claimName: homepage-config
+
+# docker run --name homepage \
+#  -e HOMEPAGE_ALLOWED_HOSTS=gethomepage.dev \
+#  -e PUID=1000 \
+#  -e PGID=1000 \
+#  -p 3000:3000 \
+#  -v /path/to/config:/app/config \
+#  -v /var/run/docker.sock:/var/run/docker.sock:ro \
+#  --restart unless-stopped \
+#  ghcr.io/gethomepage/homepage:latest
