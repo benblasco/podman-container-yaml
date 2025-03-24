@@ -1,0 +1,11 @@
+[Unit]
+Description=Jenkins container run by Podman
+Before=local-fs.target
+
+[Kube]
+Yaml=pod-jenkins.yml
+
+# Commented out "Install" section so it does not start on boot
+#[Install]
+## Start by default on boot
+#WantedBy=multi-user.target default.target

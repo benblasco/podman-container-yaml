@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: jenkins
+      image: docker.io/jenkins/jenkins:lts-jdk17
+      ports:
+        - containerPort: 8080
+          hostPort: 18080
+        - containerPort: 50000
+          hostPort: 50000
+      volumeMounts:
+        - mountPath: /var/jenkins_home
+          name: jenkins-home
+        #- mountPath: /certs/client:ro
+          #name: jenkins-docker-certs
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+  volumes:
+    - name: jenkins-home
+      persistentVolumeClaim:
+        claimName: jenkins-home
+    #- name: jenkins-docker-certs
+      #persistentVolumeClaim:
+        #claimName: jenkins-docker-certs
