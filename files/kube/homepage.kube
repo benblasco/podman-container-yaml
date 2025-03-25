@@ -6,7 +6,7 @@ After=network.target
 [Kube]
 Yaml=pod-homepage.yml
 
-# Network config required for Uptime Kuma to monitor other services
+# Network config required for Homepage to monitor other services
 # on the same container host.
 # https://blog.podman.io/2024/03/podman-5-0-breaking-changes-in-detail/
 # Yeah the thing is pasta (by default) copies the default route interface
