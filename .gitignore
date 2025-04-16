@@ -1,0 +1,2 @@
+host_vars/*/tailscale.yml
+group_vars/*/tailscale.yml

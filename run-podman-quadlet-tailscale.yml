@@ -13,7 +13,7 @@
       # the kube file that references them.
       # The other directives need to be under
       # the kube file_src else this does not work!
-      - file_src: pod/pod-tailscale.yml
+      - template_src: pod/pod-tailscale.yml.j2
       - file_src: kube/tailscale.kube
         state: started
   roles:
