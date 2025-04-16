@@ -66,7 +66,7 @@ semodule -i bluetooth_homeassistant.pp
 
 # Tailscale container authentication key
 
-# Generate a new auth key after expiry
+## Generate a new auth key after expiry
 
 Instructions:
 https://tailscale.com/kb/1085/auth-keys
