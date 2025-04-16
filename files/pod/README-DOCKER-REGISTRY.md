@@ -53,3 +53,16 @@ openssl rsa -in self-ssl.key -out self-ssl-unencrypted.key
 ```
 
 Once you have done the above put the certificates in the right location according to the pod file definition so that they are used by the registry instance.
+
+# Docker Registry Garbage collection
+
+The Docker registry UI allows deletion of old image versions (tags), but does not actually do the garbage collection.
+
+Run the following on the command line of the container host to take care of this for you:
+
+```
+podman exec -it docker-registry-docker-registry bin/registry garbage-collect --delete-untagged /etc/docker/registry/config.yml
+```
+
+More reading: [Optimizing your container registry: Understanding garbage collection in DOCR](https://www.digitalocean.com/blog/garbage-collection-digitalocean-container-registry)
+
