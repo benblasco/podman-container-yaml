@@ -64,5 +64,7 @@ Run the following on the command line of the container host to take care of this
 podman exec -it docker-registry-docker-registry bin/registry garbage-collect --delete-untagged /etc/docker/registry/config.yml
 ```
 
-More reading: [Optimizing your container registry: Understanding garbage collection in DOCR](https://www.digitalocean.com/blog/garbage-collection-digitalocean-container-registry)
-
+More reading:
+- [Optimizing your container registry: Understanding garbage collection in DOCR](https://www.digitalocean.com/blog/garbage-collection-digitalocean-container-registry)
+- [Docker registry garbage collection](https://stackoverflow.com/questions/45046752/docker-registry-garbage-collection)
+- [How to maintain a Private Docker Registry?](https://janethavishka.medium.com/how-to-maintain-a-private-docker-registry-d4f3d291e7d5)
