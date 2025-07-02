@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rsyslog-server
+  labels:
+    #io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: rsyslog
+      image: registry.redhat.io/rhel9/rsyslog:latest
+      ports:
+        - containerPort: 514
+          hostPort: 10514
+      volumeMounts:
+        - mountPath: /etc/rsyslog.d/
+          name: rsyslog-server-conf-d
+        - mountPath: /var/log/
+          name: rsyslog-server-var-log
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+  volumes:
+    - name: rsyslog-server-conf-d
+      persistentVolumeClaim:
+        claimName: rsyslog-server-conf-d
+    - name: rsyslog-server-var-log
+      persistentVolumeClaim:
+        claimName: rsyslog-server-var-log
