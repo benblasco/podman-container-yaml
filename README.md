@@ -83,3 +83,12 @@ Then take that auth key and put it in the container pod definition
         - name: TS_AUTHKEY
           value: tskey-auth-kFwx5M8WTB21CNTRL-SDH44CBqKiizNLK3W7R2jizV4vUZ6BL1
 ```
+
+# Red Hat container registry credentials for rsyslog server container
+
+Easiest to pass them on the command line when running the playbook, like this:
+
+```
+ansible-playbook run-podman-quadlet-rsyslog.yml -e "podman_registry_username=<your registry user>" -e "podman_registry_password=<your registry password>"
+
+```
