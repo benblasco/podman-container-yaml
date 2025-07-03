@@ -4,7 +4,7 @@ Before=local-fs.target
 After=network.target
 
 [Kube]
-Yaml=pod-rsyslog.yml
+Yaml=pod-rsyslog-server.yml
 
 # Network config required for Uptime Kuma to monitor other services
 # on the same container host.

@@ -6,7 +6,7 @@ metadata:
     #io.containers.autoupdate: "registry"
 spec:
   containers:
-    - name: rsyslog
+    - name: rsyslog-server
       image: registry.redhat.io/rhel9/rsyslog:latest
       ports:
         - containerPort: 514

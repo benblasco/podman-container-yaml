@@ -89,6 +89,6 @@ Then take that auth key and put it in the container pod definition
 Easiest to pass them on the command line when running the playbook, like this:
 
 ```
-ansible-playbook run-podman-quadlet-rsyslog.yml -e "podman_registry_username=<your registry user>" -e "podman_registry_password=<your registry password>"
+ansible-playbook run-podman-quadlet-rsyslog-server.yml -e "podman_registry_username=<your registry user>" -e "podman_registry_password=<your registry password>"
 
 ```
