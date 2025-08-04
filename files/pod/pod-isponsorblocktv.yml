@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: isponsorblocktv
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: isponsorblocktv
+      image: ghcr.io/dmunozv04/isponsorblocktv:latest
+      #ports:
+        #- containerPort: 3001
+          #hostPort: 3001
+      volumeMounts:
+        - mountPath: /app/data
+          name: isponsorblocktv-configdata
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+  volumes:
+    - name: isponsorblocktv-configdata
+      persistentVolumeClaim:
+        claimName: isponsorblocktv-configdata
+
+#podman run -d --name isponsorblocktv --restart=unless-stopped -v isponsorblocktv-configdata:/app/data ghcr.io/dmunozv04/isponsorblocktv
