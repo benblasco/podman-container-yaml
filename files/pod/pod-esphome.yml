@@ -1,0 +1,36 @@
+# Run via the following command:
+# podman kube play --userns=keep-id --network=host pod-esphome.yml 
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: esphome
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  #hostUsers: false
+  containers:
+    - name: esphome
+      image: docker.io/esphome/esphome:stable
+#      ports:
+#        - containerPort: 6052
+#          hostPort: 6052
+      volumeMounts:
+        - mountPath: /config
+          name: esphome-config
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        #allowPrivilegeEscalation: true
+        capabilities: {}
+        privileged: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        #fsGroup: 1000
+        #fsGroupChangePolicy: "Always"
+
+  volumes:
+    - name: esphome-config
+      persistentVolumeClaim:
+        claimName: esphome-config

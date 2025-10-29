@@ -1,0 +1,25 @@
+---
+- name: Run the podman system role
+  hosts: opti.lan
+  become: yes
+  vars:
+    podman_run_as_user: bblasco
+    podman_run_as_group: bblasco
+    podman_firewall:
+      - port: 6052/tcp
+        state: enabled
+    podman_quadlet_specs:
+      # The yml files need to be defined before
+      # the kube file that references them.
+      # The other directives need to be under
+      # the kube file_src else this does not work!
+      - file_src: pod/pod-esphome.yml
+      - file_src: kube/esphome.kube
+        # Setting the state to created because we have to
+        # change ownership of files in volumes due to this bug
+        # when using userns=keep-id:
+        # "podman run is not honoring --userns=keep-id --user=1000:1000 settings while creating volumes"
+        # https://github.com/containers/podman/issues/16741
+        state: created
+  roles:
+    - fedora.linux_system_roles.podman
