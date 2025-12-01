@@ -5,7 +5,7 @@ After=network.target
 
 [Kube]
 Yaml=pod-homeassistant.yml
-UserNS=keep-id
+#UserNS=keep-id
 Network=host
 
 [Install]

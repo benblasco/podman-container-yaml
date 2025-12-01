@@ -1,10 +1,10 @@
 ---
 - name: Run the podman system role
-  hosts: opti.lan
+  hosts: micro.lan
   become: yes
   vars:
-    podman_run_as_user: bblasco
-    podman_run_as_group: bblasco
+    podman_run_as_user: root
+    podman_run_as_group: root
     podman_firewall:
       - port: 8123/tcp
         state: enabled

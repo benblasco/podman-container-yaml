@@ -24,6 +24,9 @@ spec:
           readOnly: true
         - mountPath: /var/run/dbus
           name: var-run-dbus
+        # USB Path to connect to Home Assistant ZBT-1 USB dongle
+        - mountPath: /dev/ttyUSB0
+          name: dev-ttyUSB0
       env:
         - name: TZ
           value: Australia/Melbourne
@@ -38,9 +41,9 @@ spec:
             - CAP_NET_ADMIN
             - CAP_NET_RAW
             - CAP_SYS_MODULE
-        privileged: true
-        runAsUser: 1000
-        runAsGroup: 1000
+        #privileged: true
+        #runAsUser: 1000
+        #runAsGroup: 1000
         #fsGroup: 1000
         #fsGroupChangePolicy: "Always"
 
@@ -55,3 +58,9 @@ spec:
     - name: var-run-dbus
       hostPath:
         path: /var/run/dbus
+    # USB Path to connect to Home Assistant ZBT-1 USB dongle
+    - name: dev-ttyUSB0
+      hostPath:
+        path: /dev/ttyUSB0
+        # Note: setting this explicitly as CharDevice ensured everything worked smoothly
+        type: CharDevice
