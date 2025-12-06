@@ -41,7 +41,7 @@ spec:
             - CAP_NET_ADMIN
             - CAP_NET_RAW
             - CAP_SYS_MODULE
-        #privileged: true
+        privileged: true
         #runAsUser: 1000
         #runAsGroup: 1000
         #fsGroup: 1000
