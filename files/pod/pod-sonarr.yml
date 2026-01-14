@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sonarr
+  labels:
+    io.containers.autoupdate: "registry"
+  #annotations:
+    # https://www.redhat.com/en/blog/debug-rootless-podman-mounted-volumes
+    #run.oci.keep_original_groups: 1
+spec:
+  containers:
+    - name: sonarr
+      image: lscr.io/linuxserver/sonarr:latest
+      ports:
+        - containerPort: 8989
+          hostPort: 8989
+      volumeMounts:
+        - mountPath: /config
+          name: sonarr-config
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      #securityContext:
+        # Set the following permission to allow reading of host's
+        # downloads dir (the hostPath mount).
+        # This is not a good practice
+        # Read more here:
+        # https://github.com/containers/podman/issues/3683
+        # Udica is possibly a better solution for creating policies
+        # relating to containers
+        #privileged: true
+
+  volumes:
+    - name: sonarr-config
+      persistentVolumeClaim:
+        claimName: sonarr-config
+
+# https://hub.docker.com/r/linuxserver/sonarr
+# docker run -d \
+#  --name=sonarr \
+#  -e PUID=1000 \
+#  -e PGID=1000 \
+#  -e TZ=Etc/UTC \
+#  -p 8989:8989 \
+#  -v /path/to/sonarr/data:/config \
+#  -v /path/to/tvseries:/tv `#optional` \
+#  -v /path/to/downloadclient-downloads:/downloads `#optional` \
+#  --restart unless-stopped \
+#  lscr.io/linuxserver/sonarr:latest

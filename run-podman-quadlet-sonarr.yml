@@ -1,0 +1,21 @@
+---
+- name: Run the podman system role to install Sonarr PVR software
+  # https://hub.docker.com/r/linuxserver/sonarr
+  hosts: micro.lan
+  become: yes
+  vars:
+    podman_run_as_user: media
+    podman_run_as_group: media
+    podman_firewall:
+      - port: 8989/tcp
+        state: enabled
+    podman_quadlet_specs:
+      # The yml files need to be defined before
+      # the kube file that references them.
+      # The other directives need to be under
+      # the kube file_src else this does not work!
+      - file_src: pod/pod-sonarr.yml
+      - file_src: kube/sonarr.kube
+        state: started
+  roles:
+    - fedora.linux_system_roles.podman

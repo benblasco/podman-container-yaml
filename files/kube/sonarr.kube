@@ -1,0 +1,23 @@
+[Unit]
+Description=Sonarr PVR container run by Podman
+Before=local-fs.target
+After=network.target mnt-sg1.mount transmission.service
+
+[Kube]
+Yaml=pod-sonarr.yml
+UserNS=keep-id
+
+# Network config required for Transmission to reach DNS servers that
+# may be on the same container host.
+# https://blog.podman.io/2024/03/podman-5-0-breaking-changes-in-detail/
+# Yeah the thing is pasta (by default) copies the default route interface
+# ip addresses to the container namespace. As such all connections trying
+# to connect to the host ip from within the container are never routed to
+# the host as the ip is local in the container. The work around we came up
+# with is using a second ip that is routed to the host ip instead (that
+# is what host.containers.internal) is.
+Network=pasta:-a,10.0.2.0,-n,24,-g,10.0.2.2,--dns-forward,10.0.2.3
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
