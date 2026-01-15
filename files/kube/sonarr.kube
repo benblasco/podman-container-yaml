@@ -5,7 +5,8 @@ After=network.target mnt-sg1.mount transmission.service
 
 [Kube]
 Yaml=pod-sonarr.yml
-UserNS=keep-id
+#UserNS=keep-id:uid=1000,gid=1000
+#UserNS=keep-id
 
 # Network config required for Transmission to reach DNS servers that
 # may be on the same container host.

@@ -17,10 +17,16 @@ spec:
       volumeMounts:
         - mountPath: /config
           name: sonarr-config
+        - mountPath: /mnt/tv
+          name: sonarr-downloads
       env:
+        - name: PUID
+          value: 1000
+        - name: PGID
+          value: 1000
         - name: TZ
           value: Australia/Melbourne
-      #securityContext:
+      securityContext:
         # Set the following permission to allow reading of host's
         # downloads dir (the hostPath mount).
         # This is not a good practice
@@ -28,12 +34,20 @@ spec:
         # https://github.com/containers/podman/issues/3683
         # Udica is possibly a better solution for creating policies
         # relating to containers
-        #privileged: true
+        privileged: true
+      #securityContext:
+        #runAsUser: 1000
+        #runAsGroup: 1000
 
   volumes:
     - name: sonarr-config
       persistentVolumeClaim:
         claimName: sonarr-config
+    - name: sonarr-downloads
+      #volumeMode: Filesystem
+      hostPath:
+        path: /mnt/sg1/media/tv
+        type: Directory
 
 # https://hub.docker.com/r/linuxserver/sonarr
 # docker run -d \
