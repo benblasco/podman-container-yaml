@@ -17,8 +17,35 @@ spec:
       volumeMounts:
         - mountPath: /config
           name: sonarr-config
-        - mountPath: /mnt/tv
-          name: sonarr-downloads
+        - mountPath: /mnt/media
+          name: sonarr-media
+      env:
+        - name: PUID
+          value: 1000
+        - name: PGID
+          value: 1000
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        # Set the following permission to allow reading of host's
+        # downloads dir (the hostPath mount).
+        # This is not a good practice
+        # Read more here:
+        # https://github.com/containers/podman/issues/3683
+        # Udica is possibly a better solution for creating policies
+        # relating to containers
+        privileged: true
+      #securityContext:
+        #runAsUser: 1000
+        #runAsGroup: 1000
+    - name: prowlarr
+      image: lscr.io/linuxserver/prowlarr:latest
+      ports:
+        - containerPort: 9696
+          hostPort: 9696
+      volumeMounts:
+        - mountPath: /config
+          name: prowlarr-config
       env:
         - name: PUID
           value: 1000
@@ -43,11 +70,13 @@ spec:
     - name: sonarr-config
       persistentVolumeClaim:
         claimName: sonarr-config
-    - name: sonarr-downloads
+    - name: sonarr-media
       #volumeMode: Filesystem
       hostPath:
-        path: /mnt/sg1/media/tv
-        type: Directory
+        path: /mnt/sg1/media
+    - name: prowlarr-config
+      persistentVolumeClaim:
+        claimName: prowlarr-config
 
 # https://hub.docker.com/r/linuxserver/sonarr
 # docker run -d \
@@ -59,5 +88,15 @@ spec:
 #  -v /path/to/sonarr/data:/config \
 #  -v /path/to/tvseries:/tv `#optional` \
 #  -v /path/to/downloadclient-downloads:/downloads `#optional` \
+#
+# https://hub.docker.com/r/linuxserver/prowlarr
+#docker run -d \
+#  --name=prowlarr \
+#  -e PUID=1000 \
+#  -e PGID=1000 \
+#  -e TZ=Etc/UTC \
+#  -p 9696:9696 \
+#  -v /path/to/prowlarr/data:/config \
 #  --restart unless-stopped \
-#  lscr.io/linuxserver/sonarr:latest
+#  lscr.io/linuxserver/prowlarr:latest
+#

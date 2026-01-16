@@ -7,7 +7,11 @@
     podman_run_as_user: media
     podman_run_as_group: media
     podman_firewall:
+      # Sonarr port
       - port: 8989/tcp
+        state: enabled
+      # Prowlarr port
+      - port: 9696/tcp
         state: enabled
     podman_quadlet_specs:
       # The yml files need to be defined before
