@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: boot-server
+  labels:
+    io.containers.autoupdate: "registry"
+  #annotations:
+    # https://www.redhat.com/en/blog/debug-rootless-podman-mounted-volumes
+    #run.oci.keep_original_groups: 1
+spec:
+  containers:
+    - name: boot-server
+      image: registry.access.redhat.com/ubi10/httpd-24:latest
+      ports:
+        - containerPort: 80
+          hostPort: 8800
+      volumeMounts:
+        - mountPath: /var/www/html
+          name: boot-server-content
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        # Set the following permission to allow reading of host's
+        # downloads dir (the hostPath mount).
+        # This is not a good practice
+        # Read more here:
+        # https://github.com/containers/podman/issues/3683
+        # Udica is possibly a better solution for creating policies
+        # relating to containers
+        privileged: true
+
+  volumes:
+    - name: boot-server-content
+      #volumeMode: Filesystem
+      hostPath:
+        path: /var/home/bblasco/boot-server
+        type: Directory
