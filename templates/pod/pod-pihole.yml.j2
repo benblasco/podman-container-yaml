@@ -14,20 +14,20 @@ spec:
         limits:
           memory: "512Mi"
       ports:
-      - containerPort: 53
-        hostPort: 53
-        protocol: UDP
-        hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
-      - containerPort: 53
-        hostPort: 53
-        protocol: TCP
-        hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
-      - containerPort: 80
-        hostPort: 80
-        hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
-      - containerPort: 443
-        hostPort: 443
-        hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+        - containerPort: 53
+          hostPort: 53
+          protocol: UDP
+          hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+        - containerPort: 53
+          hostPort: 53
+          protocol: TCP
+          hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+        - containerPort: 80
+          hostPort: 80
+          hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+        - containerPort: 443
+          hostPort: 443
+          hostIP: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
       env:
         - name: TZ
           value: Australia/Melbourne

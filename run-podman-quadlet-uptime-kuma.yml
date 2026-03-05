@@ -1,7 +1,7 @@
 ---
 - name: Run the podman system role
   hosts: micro.lan
-  become: yes
+  become: true
   vars:
     podman_run_as_user: bblasco
     podman_run_as_group: bblasco

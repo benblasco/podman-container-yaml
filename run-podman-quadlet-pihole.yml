@@ -1,7 +1,7 @@
 ---
 - name: Run the podman system role
   hosts: micro.lan,nuc.lan,opti.lan
-  become: yes
+  become: true
   vars:
     podman_run_as_user: root
     podman_run_as_group: root

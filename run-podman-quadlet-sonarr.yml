@@ -2,7 +2,7 @@
 - name: Run the podman system role to install Sonarr PVR software
   # https://hub.docker.com/r/linuxserver/sonarr
   hosts: micro.lan
-  become: yes
+  become: true
   vars:
     podman_run_as_user: media
     podman_run_as_group: media
