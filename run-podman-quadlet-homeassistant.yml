@@ -8,6 +8,12 @@
     podman_firewall:
       - port: 8123/tcp
         state: enabled
+      # UDP Ports 6666 and 6667 for LocalTuya discovery
+      # https://github.com/rospogrigio/localtuya/issues/1742
+      - port: 6666/udp
+        state: enabled
+      - port: 6667/udp
+        state: enabled
     podman_quadlet_specs:
       # The yml files need to be defined before
       # the kube file that references them.
