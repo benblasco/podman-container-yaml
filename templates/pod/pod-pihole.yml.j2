@@ -31,6 +31,13 @@ spec:
       env:
         - name: TZ
           value: Australia/Melbourne
+      securityContext:
+        seLinuxOptions:
+          #level: "s0"
+          ## Read more about SELinux separation disabled here:
+          ## https://developers.redhat.com/articles/2025/04/11/my-advice-selinux-container-labeling
+          ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+          type: "spc_t"
       volumeMounts:
         - mountPath: /etc/pihole
           name: pihole-etc
