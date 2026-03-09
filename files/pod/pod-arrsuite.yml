@@ -1,0 +1,102 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: arrsuite
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: sonarr
+      image: lscr.io/linuxserver/sonarr:latest
+      ports:
+        - containerPort: 8989
+          hostPort: 8989
+      volumeMounts:
+        - mountPath: /config
+          name: sonarr-config
+        - mountPath: /mnt/media
+          name: media
+      env:
+        - name: PUID
+          value: 1000
+        - name: PGID
+          value: 1000
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        privileged: true
+      livenessProbe:
+        httpGet:
+          path: /ping
+          port: 8989
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+    - name: prowlarr
+      image: lscr.io/linuxserver/prowlarr:latest
+      ports:
+        - containerPort: 9696
+          hostPort: 9696
+      volumeMounts:
+        - mountPath: /config
+          name: prowlarr-config
+      env:
+        - name: PUID
+          value: 1000
+        - name: PGID
+          value: 1000
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        privileged: true
+      livenessProbe:
+        httpGet:
+          path: /ping
+          port: 9696
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+    - name: radarr
+      image: lscr.io/linuxserver/radarr:latest
+      ports:
+        - containerPort: 7878
+          hostPort: 7878
+      volumeMounts:
+        - mountPath: /config
+          name: radarr-config
+        - mountPath: /mnt/media
+          name: media
+      env:
+        - name: PUID
+          value: 1000
+        - name: PGID
+          value: 1000
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        privileged: true
+      livenessProbe:
+        httpGet:
+          path: /ping
+          port: 7878
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+
+  volumes:
+    - name: sonarr-config
+      persistentVolumeClaim:
+        claimName: sonarr-config
+    - name: prowlarr-config
+      persistentVolumeClaim:
+        claimName: prowlarr-config
+    - name: radarr-config
+      persistentVolumeClaim:
+        claimName: radarr-config
+    - name: media
+      hostPath:
+        path: /mnt/sg1/media

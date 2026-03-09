@@ -1,0 +1,23 @@
+---
+- name: Run the podman system role to install Arrsuite (Sonarr, Prowlarr, Radarr)
+  hosts: micro.lan
+  become: true
+  vars:
+    podman_run_as_user: media
+    podman_run_as_group: media
+    podman_firewall:
+      # Sonarr port
+      - port: 8989/tcp
+        state: enabled
+      # Prowlarr port
+      - port: 9696/tcp
+        state: enabled
+      # Radarr port
+      - port: 7878/tcp
+        state: enabled
+    podman_quadlet_specs:
+      - file_src: pod/pod-arrsuite.yml
+      - file_src: kube/arrsuite.kube
+        state: started
+  roles:
+    - fedora.linux_system_roles.podman

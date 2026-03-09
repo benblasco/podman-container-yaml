@@ -1,0 +1,16 @@
+[Unit]
+Description=Arrsuite (Sonarr, Prowlarr, Radarr) run by Podman
+Before=local-fs.target
+After=network.target mnt-sg1.mount transmission.service
+
+[Kube]
+Yaml=pod-arrsuite.yml
+
+# Network config required for Transmission to reach DNS servers that
+# may be on the same container host.
+# https://blog.podman.io/2024/03/podman-5-0-breaking-changes-in-detail/
+Network=pasta:-a,10.0.2.0,-n,24,-g,10.0.2.2,--dns-forward,10.0.2.3
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
