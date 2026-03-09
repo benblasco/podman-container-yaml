@@ -18,3 +18,11 @@
         state: started
   roles:
     - fedora.linux_system_roles.podman
+  tasks:
+    - name: Copy Homepage services config into homepage-config volume
+      containers.podman.podman_container_copy:
+        #src: /files/homepage-config/services.yaml
+        src: /tmp/services.yaml
+        dest: /app/config/services.yaml
+        container: homepage-homepage
+      become: false
