@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: radarr
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: radarr
+      image: lscr.io/linuxserver/radarr:latest
+      ports:
+        - containerPort: 7878
+          hostPort: 7878
+      volumeMounts:
+        - mountPath: /config
+          name: radarr-config
+        - mountPath: /mnt/media
+          name: radarr-media
+      env:
+        - name: PUID
+          value: 1000
+        - name: PGID
+          value: 1000
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        # Set the following permission to allow reading of host's
+        # downloads dir (the hostPath mount).
+        # This is not a good practice
+        # Read more here:
+        # https://github.com/containers/podman/issues/3683
+        # Udica is possibly a better solution for creating policies
+        # relating to containers
+        privileged: true
+
+  volumes:
+    - name: radarr-config
+      persistentVolumeClaim:
+        claimName: radarr-config
+    - name: radarr-media
+      hostPath:
+        path: /mnt/sg1/media
+
+# https://hub.docker.com/r/linuxserver/radarr
+# docker run -d \
+#  --name=radarr \
+#  -e PUID=1000 \
+#  -e PGID=1000 \
+#  -e TZ=Etc/UTC \
+#  -p 7878:7878 \
+#  -v /path/to/radarr/data:/config \
+#  -v /path/to/movies:/movies `#optional` \
+#  -v /path/to/downloadclient-downloads:/downloads `#optional` \
+#  --restart unless-stopped \
+#  lscr.io/linuxserver/radarr:latest
