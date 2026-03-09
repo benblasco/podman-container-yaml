@@ -1,6 +1,7 @@
 [Unit]
 Description=Hashicorp Vault container run by Podman
 Before=local-fs.target
+After=network.target
 
 [Kube]
 Yaml=pod-hashicorp-vault.yml
