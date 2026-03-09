@@ -86,6 +86,33 @@ spec:
         periodSeconds: 10
         timeoutSeconds: 5
         failureThreshold: 3
+    - name: lidarr
+      image: lscr.io/linuxserver/lidarr:latest
+      ports:
+        - containerPort: 8686
+          hostPort: 8686
+      volumeMounts:
+        - mountPath: /config
+          name: lidarr-config
+        - mountPath: /mnt/media
+          name: media
+      env:
+        - name: PUID
+          value: 1000
+        - name: PGID
+          value: 1000
+        - name: TZ
+          value: Australia/Melbourne
+      securityContext:
+        privileged: true
+      livenessProbe:
+        httpGet:
+          path: /ping
+          port: 8686
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
 
   volumes:
     - name: sonarr-config
@@ -97,6 +124,9 @@ spec:
     - name: radarr-config
       persistentVolumeClaim:
         claimName: radarr-config
+    - name: lidarr-config
+      persistentVolumeClaim:
+        claimName: lidarr-config
     - name: media
       hostPath:
         path: /mnt/sg1/media

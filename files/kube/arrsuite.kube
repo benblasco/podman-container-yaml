@@ -1,5 +1,5 @@
 [Unit]
-Description=Arrsuite (Sonarr, Prowlarr, Radarr) run by Podman
+Description=Arrsuite (Sonarr, Prowlarr, Radarr, Lidarr) run by Podman
 Before=local-fs.target
 After=network.target mnt-sg1.mount transmission.service
 

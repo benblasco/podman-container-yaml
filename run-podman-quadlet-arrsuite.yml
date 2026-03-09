@@ -1,5 +1,5 @@
 ---
-- name: Run the podman system role to install Arrsuite (Sonarr, Prowlarr, Radarr)
+- name: Run the podman system role to install Arrsuite (Sonarr, Prowlarr, Radarr, Lidarr)
   hosts: micro.lan
   become: true
   vars:
@@ -14,6 +14,9 @@
         state: enabled
       # Radarr port
       - port: 7878/tcp
+        state: enabled
+      # Lidarr port
+      - port: 8686/tcp
         state: enabled
     podman_quadlet_specs:
       - file_src: pod/pod-arrsuite.yml
