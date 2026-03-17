@@ -36,6 +36,14 @@ spec:
         # Udica is possibly a better solution for creating policies
         # relating to containers
         privileged: true
+      livenessProbe:
+        httpGet:
+          path: /transmission/web/
+          port: 9091
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
 
   volumes:
     - name: transmission-config
@@ -68,4 +76,3 @@ spec:
 # -v /path/to/watch/folder:/watch `#optional` \
 # --restart unless-stopped \
 # lscr.io/linuxserver/transmission:latest
-
