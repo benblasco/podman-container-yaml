@@ -1,5 +1,5 @@
 # Run via the following command:
-# podman kube play --userns=keep-id --network=host pod-esphome.yml 
+# podman kube play --userns=keep-id --network=host pod-esphome.yml
 #
 apiVersion: v1
 kind: Pod
@@ -29,6 +29,15 @@ spec:
         runAsGroup: 1000
         #fsGroup: 1000
         #fsGroupChangePolicy: "Always"
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 6052
+          scheme: HTTP
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
 
   volumes:
     - name: esphome-config

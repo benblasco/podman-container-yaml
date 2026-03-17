@@ -40,6 +40,16 @@ spec:
       env:
         - name: TZ
           value: Australia/Melbourne
+      # Using basic nc probe because no curl or wget inside container.
+      # https://github.com/containers/podman/issues/18318
+      livenessProbe:
+        exec:
+          command: ["/bin/sh", "-c", "nc -z 127.0.0.1 8200"]
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+
   volumes:
     - name: vault-logs
       persistentVolumeClaim:
