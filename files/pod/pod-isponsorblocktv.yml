@@ -17,6 +17,16 @@ spec:
       env:
         - name: TZ
           value: Australia/Melbourne
+      # Since iSponsorBlockTV has no HTTP endpoint to hit, a liveness probe
+      # needs to work differently. The most meaningful check is whether the
+      # Python process is actually running. 
+      livenessProbe:
+        exec:
+          command: ["/bin/sh", "-c", "/usr/bin/pgrep -f main.pyc"]
+        initialDelaySeconds: 45
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
   volumes:
     - name: isponsorblocktv-configdata
       persistentVolumeClaim:
