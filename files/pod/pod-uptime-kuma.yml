@@ -17,6 +17,14 @@ spec:
       env:
         - name: TZ
           value: Australia/Melbourne
+      livenessProbe:
+        httpGet:
+          path: /dashboard
+          port: 3001
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
   volumes:
     - name: uptime-kuma-app-data
       persistentVolumeClaim:
