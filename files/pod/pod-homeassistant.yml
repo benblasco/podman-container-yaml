@@ -1,5 +1,5 @@
 # Run via the following command:
-# podman kube play --userns=keep-id --network=host pod-homeassistant.yml 
+# podman kube play --userns=keep-id --network=host pod-homeassistant.yml
 #
 apiVersion: v1
 kind: Pod
@@ -46,6 +46,14 @@ spec:
         #runAsGroup: 1000
         #fsGroup: 1000
         #fsGroupChangePolicy: "Always"
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 8123
+        initialDelaySeconds: 90
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
 
   volumes:
     - name: homeassistant-config
