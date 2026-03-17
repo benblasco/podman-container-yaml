@@ -41,6 +41,20 @@ spec:
           value: false
         - name: CATALOG_ELEMENTS_LIMIT
           value: 1000
+      # Note: Probe is on 127.0.0.1 rather than localhost
+      # because localhost resolves to IPv6, which is not in use
+      livenessProbe:
+        exec:
+          command:
+            - wget
+            - -q
+            - -O
+            - /dev/null
+            - http://127.0.0.1/
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
 
   volumes:
     - name: docker-registry-ui-var-lib-registry

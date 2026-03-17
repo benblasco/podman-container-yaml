@@ -38,6 +38,15 @@ spec:
           value: '[Authorization,Accept,Cache-Control]'
         - name: REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers
           value: '[Docker-Content-Digest]'
+      livenessProbe:
+        httpGet:
+          path: /v2/
+          port: 5000
+          scheme: HTTPS
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
 
   volumes:
     - name: docker-registry-var-lib-registry
