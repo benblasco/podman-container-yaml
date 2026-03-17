@@ -5,6 +5,8 @@
   vars:
     podman_run_as_user: bblasco
     podman_run_as_group: bblasco
+    # Single source of truth: init container gets this and writes to homepage-config volume
+    homepage_services_yaml: "{{ lookup('file', playbook_dir + '/files/homepage-config/services.yaml') }}"
     podman_firewall:
       - port: 3000/tcp
         state: enabled
@@ -13,16 +15,9 @@
       # the kube file that references them.
       # The other directives need to be under
       # the kube file_src else this does not work!
-      - file_src: pod/pod-homepage.yml
+      - template_src: pod/pod-homepage.yml.j2
+      #- file_src: pod/pod-homepage.yml
       - file_src: kube/homepage.kube
         state: started
   roles:
     - fedora.linux_system_roles.podman
-  tasks:
-    - name: Copy Homepage services config into homepage-config volume
-      containers.podman.podman_container_copy:
-        #src: /files/homepage-config/services.yaml
-        src: /tmp/services.yaml
-        dest: /app/config/services.yaml
-        container: homepage-homepage
-      become: false

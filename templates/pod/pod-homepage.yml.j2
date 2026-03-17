@@ -1,0 +1,49 @@
+---
+# Rendered from files/homepage-config/services.yaml (single source of truth).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homepage
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  initContainers:
+    - name: copy-services-config
+      image: registry.access.redhat.com/ubi10/ubi-minimal:latest
+      command:
+        - sh
+        - -c
+        - printf '%s' "$HOMEPAGE_SERVICES_YAML" > /app/config/services.yaml
+      env:
+        - name: HOMEPAGE_SERVICES_YAML
+          value: |
+{{ homepage_services_yaml | indent(12, first=True) }}
+      volumeMounts:
+        - mountPath: /app/config
+          name: homepage-config
+  containers:
+    - name: homepage
+      image: ghcr.io/gethomepage/homepage:latest
+      ports:
+        - containerPort: 3000
+          hostPort: 3000
+      volumeMounts:
+        - mountPath: /app/config
+          name: homepage-config
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: '*'
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 3000
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+  volumes:
+    - name: homepage-config
+      persistentVolumeClaim:
+        claimName: homepage-config

@@ -1,3 +1,6 @@
+# Superseded by templates/pod/pod-homepage.yml.j2 when using the playbook.
+# The playbook injects files/homepage-config/services.yaml into the init container
+# via homepage_services_yaml (single source of truth). Edit that file, not this one.
 apiVersion: v1
 kind: Pod
 metadata:
@@ -19,17 +22,15 @@ spec:
           value: Australia/Melbourne
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: '*'
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 3000
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
   volumes:
     - name: homepage-config
       persistentVolumeClaim:
         claimName: homepage-config
-
-# docker run --name homepage \
-#  -e HOMEPAGE_ALLOWED_HOSTS=gethomepage.dev \
-#  -e PUID=1000 \
-#  -e PGID=1000 \
-#  -p 3000:3000 \
-#  -v /path/to/config:/app/config \
-#  -v /var/run/docker.sock:/var/run/docker.sock:ro \
-#  --restart unless-stopped \
-#  ghcr.io/gethomepage/homepage:latest
