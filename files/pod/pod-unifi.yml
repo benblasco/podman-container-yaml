@@ -65,6 +65,21 @@ spec:
         privileged: false
         readOnlyRootFilesystem: false
         seLinuxOptions: {}
+      # Note: Probe uses curl directly to access the -k switch to ignore
+      # certificate verification errors.
+      livenessProbe:
+        exec:
+          command:
+            - curl
+            - -k
+            - -s
+            - -o
+            - /dev/null
+            - https://127.0.0.1:8443/manage/account/login
+        initialDelaySeconds: 120
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
   # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
 #  dnsPolicy: "None"
 #  dnsConfig:
