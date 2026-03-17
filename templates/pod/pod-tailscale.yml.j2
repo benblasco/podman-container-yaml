@@ -8,9 +8,9 @@ spec:
   containers:
     - name: tailscale
       image: docker.io/tailscale/tailscale:stable
-      #ports:
-        #- containerPort: 3001
-          #hostPort: 3001
+      ports:
+        - containerPort: 9002
+          hostPort: 9002
       volumeMounts:
         - mountPath: /var/lib
           name: tailscale-var-lib
@@ -28,6 +28,10 @@ spec:
           value: 192.168.1.0/24,192.168.3.0/24,192.168.6.0/24,192.168.7.0/24
         - name: TS_STATE_DIR
           value: /var/lib/tailscale
+        # Health checks added as per:
+        # https://tailscale.com/docs/features/containers/docker#ts_enable_health_check
+        - name: TS_ENABLE_HEALTH_CHECK
+          value: "true"
       securityContext:
         #allowPrivilegeEscalation: true
         capabilities:
@@ -40,6 +44,15 @@ spec:
             - CAP_NET_RAW
             - CAP_SYS_MODULE
         privileged: false
+      # tcpSocket: runtime checks port 9002 is open (no HTTP client in container needed).
+      # If health server binds to localhost only, use exec with "tailscale status" instead.
+      livenessProbe:
+        tcpSocket:
+          port: 9002
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
 
   volumes:
     - name: tailscale-var-lib
