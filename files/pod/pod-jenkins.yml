@@ -21,6 +21,14 @@ spec:
       env:
         - name: TZ
           value: Australia/Melbourne
+      livenessProbe:
+        httpGet:
+          path: /login
+          port: 8080
+        initialDelaySeconds: 120
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
   volumes:
     - name: jenkins-home
       persistentVolumeClaim:
