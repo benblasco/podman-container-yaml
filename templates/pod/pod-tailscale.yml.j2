@@ -25,7 +25,7 @@ spec:
           #value: --advertise-tags=tag:container --advertise-exit-node
           value: --hostname=tailscale-{{ inventory_hostname_short }} --advertise-exit-node
         - name: TS_ROUTES
-          value: 192.168.1.0/24,192.168.3.0/24,192.168.6.0/24,192.168.7.0/24
+          value: 192.168.1.0/24,192.168.3.0/24,192.168.5.0/24,192.168.6.0/24,192.168.7.0/24
         - name: TS_STATE_DIR
           value: /var/lib/tailscale
         # Health checks added as per:
