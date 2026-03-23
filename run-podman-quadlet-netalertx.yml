@@ -1,0 +1,47 @@
+---
+- name: Run the podman system role
+  hosts: micro.lan
+  become: true
+  pre_tasks:
+    # With network_mode: host the container shares the host network namespace,
+    # so sysctls cannot be set inside the container spec — they must be applied
+    # on the host. Attempting to set them in the pod YAML results in:
+    # "sysctl not allowed in host network namespace".
+    # https://docs.netalertx.com/docker-troubleshooting/arp-flux-sysctls/
+    - name: Set ARP flux sysctls required by NetAlertX
+      ansible.posix.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        sysctl_file: /etc/sysctl.d/99-netalertx.conf
+        state: present
+        reload: true
+      loop:
+        - { name: net.ipv4.conf.all.arp_ignore, value: "1" }
+        - { name: net.ipv4.conf.all.arp_announce, value: "2" }
+  vars:
+    # Must run as root: rootless Podman + Network=host + AF_PACKET raw sockets
+    # is incompatible. The kernel checks CAP_NET_RAW in the initial (host) user
+    # namespace, not in the container's user namespace — so an unprivileged host
+    # user is always denied regardless of capabilities granted inside the container.
+    # See https://docs.netalertx.com/docker-troubleshooting/netalertx-container-user-namespace/
+    # and https://github.com/containers/podman/discussions/21079
+    podman_run_as_user: root
+    podman_run_as_group: root
+    podman_firewall:
+      - port: 20211/tcp
+        state: enabled
+      - port: 20212/tcp
+        state: enabled
+    podman_quadlet_specs:
+      # The yml files need to be defined before
+      # the kube file that references them.
+      # The other directives need to be under
+      # the kube file_src else this does not work!
+      #
+      # Note: template_src points to files under templates/
+      # Note: file_src points to files under files/
+      - template_src: pod/pod-netalertx.yml.j2
+      - file_src: kube/netalertx.kube
+        state: started
+  roles:
+    - fedora.linux_system_roles.podman

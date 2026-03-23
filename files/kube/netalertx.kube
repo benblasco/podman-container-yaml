@@ -1,0 +1,12 @@
+[Unit]
+Description=NetAlertX container run by Podman
+After=network-online.target
+
+[Kube]
+Yaml=pod-netalertx.yml
+# host network is required for ARP scanning to discover devices on the LAN.
+Network=host
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target

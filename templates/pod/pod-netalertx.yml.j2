@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: netalertx
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: netalertx
+      image: ghcr.io/netalertx/netalertx:latest
+      # Need root FS to be read-only as per NetAlertX docs:
+      # https://docs.netalertx.com/docker-troubleshooting/read-only-filesystem/#security-ramifications
+      securityContext:
+        readOnlyRootFilesystem: true
+        capabilities:
+          add:
+            - CAP_NET_RAW
+            - CAP_NET_ADMIN
+            - CAP_NET_BIND_SERVICE
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        - name: PORT
+          value: "20211"
+        # SCAN_SUBNETS must match the host interface and subnet for ARP scanning.
+        # ansible_default_ipv4 facts resolve this per-host at deploy time.
+        - name: APP_CONF_OVERRIDE
+          value: |-
+            {"SCAN_SUBNETS":"['{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.prefix }} --interface={{ ansible_default_ipv4.interface }}']"}
+      volumeMounts:
+        - mountPath: /data
+          name: netalertx-data
+        #- mountPath: /etc/localtime
+          #name: localtime
+          #readOnly: true
+        # tmpfs required by the image for runtime scratch space (UID/GID 20211).
+        - mountPath: /tmp
+          name: netalertx-tmp
+      #livenessProbe:
+        #httpGet:
+          #path: /
+          #port: 20211
+        #initialDelaySeconds: 60
+        #periodSeconds: 10
+        #timeoutSeconds: 5
+        #failureThreshold: 3
+
+  volumes:
+    - name: netalertx-data
+      persistentVolumeClaim:
+        claimName: netalertx-data
+    #- name: localtime
+      #hostPath:
+        #path: /etc/localtime
+        #type: File
+    - name: netalertx-tmp
+      emptyDir:
+        medium: Memory
+
+# ARP flux sysctls (net.ipv4.conf.all.arp_ignore=1, arp_announce=2) are NOT set
+# here. With Network=host the container shares the host network namespace, so
+# setting them in the pod spec causes an OCI runtime error. They are applied on
+# the host via ansible.posix.sysctl in the playbook instead.
+# https://docs.netalertx.com/docker-troubleshooting/arp-flux-sysctls/
+#
+# https://docs.netalertx.com/DOCKER_INSTALLATION/
+# docker run -d --rm --network=host \
+#   -v /local_data_dir:/data \
+#   -v /etc/localtime:/etc/localtime \
+#   --tmpfs /tmp:uid=20211,gid=20211,mode=1700 \
+#   -e PORT=20211 \
+#   ghcr.io/netalertx/netalertx:latest
