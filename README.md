@@ -18,6 +18,9 @@ Execute the playbook by running:
 `ansible-playbook podman-<container name>.yml --ask-become-pass`
 or similar
 
+Note: if you need to authenticate to the registry for the container, the lazy way via the command line is:
+`ansible-playbook podman-<container name>.yml --ask-become-pass -e podman_registry_username=<username> -e podman_registry_password=<password>`
+
 # Quadlet use
 
 Key info from https://www.redhat.com/sysadmin/multi-container-application-podman-quadlet
@@ -92,3 +95,13 @@ Easiest to pass them on the command line when running the playbook, like this:
 ansible-playbook run-podman-quadlet-rsyslog-server.yml -e "podman_registry_username=<your registry user>" -e "podman_registry_password=<your registry password>"
 
 ```
+
+# Pod/container healthchecks
+
+All the containers running here have liveness probes configured. You can check the health of the container with a command like: 
+
+`watch -n 5 "podman inspect <container name> --format='{{json .State.Health}}'"`
+
+You can also check what the currently running health check is via:
+
+`podman inspect <container name> --format '{{json .Config.Healthcheck}}'`

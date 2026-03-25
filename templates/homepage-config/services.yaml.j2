@@ -1,0 +1,64 @@
+---
+# Homepage services config
+# https://gethomepage.dev/widgets/services/pihole/
+# https://gethomepage.dev/widgets/services/unifi-controller/
+# https://gethomepage.dev/widgets/services/tailscale/
+- Network:
+    - PiHole (micro.lan):
+        icon: pihole.png
+        href: http://micro.lan/admin
+        description: PiHole on micro.lan
+        widget:
+          type: pihole
+          url: http://micro.lan
+          version: 6
+          # key: micro.lan PiHole password or app password
+    - PiHole (nuc.lan):
+        icon: pihole.png
+        href: http://nuc.lan/admin
+        description: PiHole on nuc.lan
+        widget:
+          type: pihole
+          url: http://nuc.lan
+          version: 6
+          # key: nuc.lan PiHole password or app password
+    - PiHole (opti.lan):
+        icon: pihole.png
+        href: http://opti.lan/admin
+        description: PiHole on opti.lan
+        widget:
+          type: pihole
+          url: http://opti.lan
+          version: 6
+          # key: opti.lan PiHole password or app password
+    - Unifi Controller:
+        icon: unifi.png
+        href: https://micro.lan:8443
+        description: Unifi Controller on micro.lan
+        widget:
+          type: unifi
+          url: https://micro.lan:8443
+          # username: <local-account-username>
+          # password: <local-account-password>
+          # site: default
+    - Tailscale:
+        icon: tailscale.png
+        href: https://login.tailscale.com
+        description: Tailscale VPN
+        widget:
+          type: tailscale
+          # deviceid: <device-id-for-micro.lan>  # found on Tailscale dashboard machine overview page
+          key: {{ homepage_tailscale_key }}
+
+# https://gethomepage.dev/widgets/services/transmission/
+- Downloads:
+    - Transmission:
+        icon: transmission.png
+        href: http://micro.lan:9091/transmission/web/
+        description: Transmission on micro.lan
+        widget:
+          type: transmission
+          url: http://micro.lan:9091
+          rpcUrl: /transmission/
+          # username: <optional>
+          # password: <optional>

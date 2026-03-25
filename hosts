@@ -4,9 +4,10 @@ cubox ansible_host=eraser215.ddns.net ansible_user=eblaben ansible_port=49152
 #cubox ansible_host=192.168.1.2 ansible_user=eblaben ansible_port=22
 # ansible_ssh_pass=ansible
 pi4.lan
-nuc.lan
-micro.lan
-opti.lan
+nuc.lan ansible_host=192.168.1.3
+micro.lan ansible_host=192.168.1.6
+#micro.lan ansible_host=eraser215.ddns.net ansible_port=49153
+opti.lan ansible_host=192.168.1.7
 ospi.lan ansible_user=pi
 
 [all:vars]

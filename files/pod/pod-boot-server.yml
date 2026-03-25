@@ -29,6 +29,14 @@ spec:
         # Udica is possibly a better solution for creating policies
         # relating to containers
         privileged: true
+      # livenessProbe:
+      #   httpGet:
+      #     path: /
+      #     port: 80
+      #   initialDelaySeconds: 15
+      #   periodSeconds: 10
+      #   timeoutSeconds: 5
+      #   failureThreshold: 3
 
   volumes:
     - name: boot-server-content

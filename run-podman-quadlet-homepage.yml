@@ -6,7 +6,7 @@
     podman_run_as_user: bblasco
     podman_run_as_group: bblasco
     # Single source of truth: init container gets this and writes to homepage-config volume
-    homepage_services_yaml: "{{ lookup('file', playbook_dir + '/files/homepage-config/services.yaml') }}"
+    homepage_services_yaml: "{{ lookup('template', playbook_dir + '/templates/homepage-config/services.yaml.j2') }}"
     podman_firewall:
       - port: 3000/tcp
         state: enabled
