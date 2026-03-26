@@ -12,7 +12,7 @@
           type: pihole
           url: http://micro.lan
           version: 6
-          # key: micro.lan PiHole password or app password
+          key: "{{ pihole_key }}"
     - PiHole (nuc.lan):
         icon: pihole.png
         href: http://nuc.lan/admin
@@ -21,7 +21,7 @@
           type: pihole
           url: http://nuc.lan
           version: 6
-          # key: nuc.lan PiHole password or app password
+          key: "{{ pihole_key }}"
     - PiHole (opti.lan):
         icon: pihole.png
         href: http://opti.lan/admin
@@ -30,7 +30,7 @@
           type: pihole
           url: http://opti.lan
           version: 6
-          # key: opti.lan PiHole password or app password
+          key: "{{ pihole_key }}"
     - Unifi Controller:
         icon: unifi.png
         href: https://micro.lan:8443
@@ -38,19 +38,22 @@
         widget:
           type: unifi
           url: https://micro.lan:8443
-          # username: <local-account-username>
-          # password: <local-account-password>
-          # site: default
+          username: "{{ unifi_local_user }}"
+          password: "{{ unifi_local_password }}"
     - Tailscale:
         icon: tailscale.png
         href: https://login.tailscale.com
         description: Tailscale VPN
         widget:
           type: tailscale
-          # deviceid: <device-id-for-micro.lan>  # found on Tailscale dashboard machine overview page
-          key: {{ homepage_tailscale_key }}
+          deviceid: {{ tailscale_deviceid }}  # found on Tailscale dashboard machine overview page
+          key: "{{ homepage_tailscale_key }}"
 
 # https://gethomepage.dev/widgets/services/transmission/
+# https://gethomepage.dev/widgets/services/sonarr/
+# https://gethomepage.dev/widgets/services/radarr/
+# https://gethomepage.dev/widgets/services/lidarr/
+# https://gethomepage.dev/widgets/services/prowlarr/
 - Downloads:
     - Transmission:
         icon: transmission.png
@@ -62,3 +65,35 @@
           rpcUrl: /transmission/
           # username: <optional>
           # password: <optional>
+    - Sonarr:
+        icon: sonarr.png
+        href: http://micro.lan:8989
+        description: Sonarr on micro.lan
+        widget:
+          type: sonarr
+          url: http://micro.lan:8989
+          key: "{{ sonarr_api_key }}"
+    - Radarr:
+        icon: radarr.png
+        href: http://micro.lan:7878
+        description: Radarr on micro.lan
+        widget:
+          type: radarr
+          url: http://micro.lan:7878
+          key: "{{ radarr_api_key }}"
+    - Lidarr:
+        icon: lidarr.png
+        href: http://micro.lan:8686
+        description: Lidarr on micro.lan
+        widget:
+          type: lidarr
+          url: http://micro.lan:8686
+          key: "{{ lidarr_api_key }}"
+    - Prowlarr:
+        icon: prowlarr.png
+        href: http://micro.lan:9696
+        description: Prowlarr on micro.lan
+        widget:
+          type: prowlarr
+          url: http://micro.lan:9696
+          key: "{{ prowlarr_api_key }}"

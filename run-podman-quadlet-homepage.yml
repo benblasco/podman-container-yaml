@@ -21,3 +21,10 @@
         state: started
   roles:
     - fedora.linux_system_roles.podman
+  post_tasks:
+    - name: Restart homepage service to apply updated config
+      become_user: bblasco
+      ansible.builtin.systemd:
+        name: homepage.service
+        state: restarted
+        scope: user

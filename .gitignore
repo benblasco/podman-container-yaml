@@ -1,2 +1,3 @@
 host_vars/*/tailscale.yml
+host_vars/*/homepage.yml
 group_vars/*/tailscale.yml
