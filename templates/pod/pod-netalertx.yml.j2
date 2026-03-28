@@ -24,9 +24,10 @@ spec:
           value: "20211"
         # SCAN_SUBNETS must match the host interface and subnet for ARP scanning.
         # ansible_default_ipv4 facts resolve this per-host at deploy time.
+        # {"SCAN_SUBNETS":"['{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.prefix }} --interface={{ ansible_default_ipv4.interface }}']"}
         - name: APP_CONF_OVERRIDE
           value: |-
-            {"SCAN_SUBNETS":"['{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.prefix }} --interface={{ ansible_default_ipv4.interface }}']"}
+            {"SCAN_SUBNETS":"['{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.prefix }}']"}
       volumeMounts:
         - mountPath: /data
           name: netalertx-data

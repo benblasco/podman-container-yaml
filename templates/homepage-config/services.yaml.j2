@@ -5,7 +5,7 @@
 # https://gethomepage.dev/widgets/services/tailscale/
 - Network:
     - PiHole (micro.lan):
-        icon: pihole.png
+        icon: pi-hole.png
         href: http://micro.lan/admin
         description: PiHole on micro.lan
         widget:
@@ -13,22 +13,22 @@
           url: http://micro.lan
           version: 6
           key: "{{ pihole_key }}"
-    - PiHole (nuc.lan):
-        icon: pihole.png
-        href: http://nuc.lan/admin
+    - PiHole (opti.lan):
+        icon: pi-hole.png
+        href: http://opti.lan/admin
         description: PiHole on nuc.lan
         widget:
           type: pihole
           url: http://nuc.lan
           version: 6
           key: "{{ pihole_key }}"
-    - PiHole (opti.lan):
-        icon: pihole.png
-        href: http://opti.lan/admin
-        description: PiHole on opti.lan
+    - PiHole (nuc.lan):
+        icon: pi-hole.png
+        href: http://nuc.lan/admin
+        description: PiHole on nuc.lan
         widget:
           type: pihole
-          url: http://opti.lan
+          url: http://nuc.lan
           version: 6
           key: "{{ pihole_key }}"
     - Unifi Controller:
@@ -97,3 +97,87 @@
           type: prowlarr
           url: http://micro.lan:9696
           key: "{{ prowlarr_api_key }}"
+
+- Servers:
+    - Cockpit (micro.lan):
+        icon: cockpit.png
+        href: https://micro.lan:9090/
+        description: Cockpit on micro.lan
+    - Cockpit (nuc.lan):
+        icon: cockpit.png
+        href: https://nuc.lan:9090/
+        description: Cockpit on nuc.lan
+    - Cockpit (opti.lan):
+        icon: cockpit.png
+        href: https://opti.lan:9090/
+        description: Cockpit on opti.lan
+    - Cockpit (hex.lan):
+        icon: cockpit.png
+        href: https://hex.lan:9090/
+        description: Cockpit on hex.lan
+
+# https://gethomepage.dev/widgets/services/uptime-kuma/
+# https://gethomepage.dev/widgets/services/netalertx/
+# https://gethomepage.dev/widgets/services/homeassistant/
+# https://gethomepage.dev/widgets/services/esphome/
+- Infrastructure:
+    - Uptime Kuma:
+        icon: uptime-kuma.png
+        href: http://micro.lan:3001/dashboard
+        description: Uptime Kuma on micro.lan
+        widget:
+          type: uptimekuma
+          url: http://micro.lan:3001
+          slug: "{{ uptime_kuma_status_slug }}"
+    - Jenkins:
+        icon: jenkins.png
+        href: http://micro.lan:18080
+        description: Jenkins on micro.lan
+    - Docker Registry UI (micro.lan):
+        icon: docker.png
+        href: http://micro.lan:8000
+        description: Docker Registry UI on micro.lan
+    - Docker Registry UI (nuc.lan):
+        icon: docker.png
+        href: http://nuc.lan:8000
+        description: Docker Registry UI on nuc.lan
+    # NetAlertX + Homepage: with a UI password enabled, the API returns HTML login unless
+    # the request carries a Bearer token. Set the token in NetAlertX (API / SYNC settings)
+    # and the same value in host_vars/.../homepage.yml as homepage_netalertx_api_token.
+    # Empty or wrong token → JSON.parse errors in the widget. version: 2 for NetAlertX >= 26.1.17.
+    - NetAlertX:
+        icon: netalertx.png
+        href: http://micro.lan:20211
+        description: NetAlertX on micro.lan
+        widget:
+          type: netalertx
+          url: http://micro.lan:20211
+          key: "{{ homepage_netalertx_api_token }}"
+          version: 2
+    - Home Assistant:
+        icon: home-assistant.png
+        href: http://micro.lan:8123
+        description: Home Assistant on micro.lan
+        widget:
+          type: homeassistant
+          url: http://micro.lan:8123
+          key: "{{ homeassistant_long_lived_token }}"
+    - ESPHome:
+        icon: esphome.png
+        href: http://micro.lan:6052
+        description: ESPHome on micro.lan
+        widget:
+          type: esphome
+          url: http://micro.lan:6052
+{% if esphome_username | default('') | length > 0 %}
+          username: "{{ esphome_username }}"
+          password: "{{ esphome_password }}"
+{% endif %}
+    - HashiCorp Vault:
+        icon: vault.png
+        href: http://micro.lan:8200/ui/
+        description: Vault on micro.lan
+    - Signal API:
+        icon: signal.png
+        href: http://micro.lan:9922/v1/
+        description: Signal Messenger REST API on micro.lan

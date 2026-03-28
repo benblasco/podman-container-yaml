@@ -1,5 +1,0 @@
----
-# Homepage service widget credentials for micro.lan
-# Tailscale API key for the homepage Tailscale widget.
-# Generate one at: https://login.tailscale.com/admin/settings/keys
-homepage_tailscale_key: ""
