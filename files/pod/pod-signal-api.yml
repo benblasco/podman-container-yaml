@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: signal-api
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: signal-api
+      image: docker.io/bbernhard/signal-cli-rest-api:latest
+      ports:
+        - containerPort: 8080
+          hostPort: 9922
+      volumeMounts:
+        - mountPath: /home/.local/share/signal-cli
+          name: signal-api-data
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        - name: MODE
+          value: native
+      livenessProbe:
+        httpGet:
+          path: /v1/about
+          port: 8080
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+  volumes:
+    - name: signal-api-data
+      persistentVolumeClaim:
+        claimName: signal-api-data
