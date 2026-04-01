@@ -1,3 +1,4 @@
 host_vars/*/tailscale.yml
 host_vars/*/homepage.yml
+host_vars/*/homeassistant.yml
 group_vars/*/tailscale.yml

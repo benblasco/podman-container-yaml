@@ -3,6 +3,8 @@
   hosts: micro.lan
   become: true
   vars:
+    # homeassistant_mcp_token (and optional homeassistant_mcp_url): host_vars/micro.lan/homeassistant.yml
+    # See host_vars/micro.lan/homeassistant.yml.example
     podman_run_as_user: root
     podman_run_as_group: root
     podman_firewall:
@@ -14,12 +16,17 @@
         state: enabled
       - port: 6667/udp
         state: enabled
+      # Ports required for unofficial HA MCP server:
+      # https://github.com/homeassistant-ai/ha-mcp
+      - port: 8086/tcp
+        state: enabled
+
     podman_quadlet_specs:
       # The yml files need to be defined before
       # the kube file that references them.
       # The other directives need to be under
       # the kube file_src else this does not work!
-      - file_src: pod/pod-homeassistant.yml
+      - template_src: pod/pod-homeassistant.yml.j2
       - file_src: kube/homeassistant.kube
         # Setting the state to created because we have to
         # change ownership of files in volumes due to this bug

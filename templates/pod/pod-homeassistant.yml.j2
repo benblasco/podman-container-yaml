@@ -1,6 +1,16 @@
-# Run via the following command:
-# podman kube play --userns=keep-id --network=host pod-homeassistant.yml
+# Run via: podman kube play --userns=keep-id --network=host pod-homeassistant.yml
+# HOMEASSISTANT_TOKEN: set homeassistant_mcp_token in host_vars (see host_vars/.../homeassistant.yml.example).
 #
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ha-mcp-env
+  labels:
+    io.containers.autoupdate: "registry"
+data:
+  HOMEASSISTANT_URL: {{ homeassistant_mcp_url | default('http://127.0.0.1:8123') | to_json }}
+  HOMEASSISTANT_TOKEN: {{ homeassistant_mcp_token | to_json }}
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -54,6 +64,22 @@ spec:
         periodSeconds: 10
         timeoutSeconds: 5
         failureThreshold: 3
+
+    # Unofficial HA MCP server (https://github.com/homeassistant-ai/ha-mcp)
+    # docker run ... -p 8086:8086 -e HOMEASSISTANT_URL=... -e HOMEASSISTANT_TOKEN=... ghcr.io/homeassistant-ai/ha-mcp:latest ha-mcp-web
+    - name: ha-mcp
+      image: ghcr.io/homeassistant-ai/ha-mcp:latest
+      command:
+        - ha-mcp-web
+      # With kube quadlet Network=host, the process binds 8086 on the host; hostPort is omitted.
+      # MCP HTTP transport is at /mcp (root / returns 404). Client URL: http://<host>:8086/mcp
+      ports:
+        - containerPort: 8086
+      envFrom:
+        - configMapRef:
+            name: ha-mcp-env
+      securityContext:
+        privileged: false
 
   volumes:
     - name: homeassistant-config

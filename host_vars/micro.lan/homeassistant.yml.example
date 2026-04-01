@@ -1,0 +1,8 @@
+# Copy to homeassistant.yml and set your long-lived access token.
+# Profile → Security → Long-lived access tokens (or equivalent).
+#
+# homeassistant_mcp_url defaults to http://127.0.0.1:8123 in the pod template
+# (correct when the kube quadlet uses Network=host).
+# homeassistant_mcp_url: "http://127.0.0.1:8123"
+#
+homeassistant_mcp_token: "REPLACE_WITH_LONG_LIVED_ACCESS_TOKEN"

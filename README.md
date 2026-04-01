@@ -66,6 +66,31 @@ To make this policy package active, execute:
 
 semodule -i bluetooth_homeassistant.pp
 ```
+# Home Assistant MCP server
+
+The home assistant pod contains this unofficial MCP server:
+https://github.com/homeassistant-ai/ha-mcp
+
+Setup guide:
+https://homeassistant-ai.github.io/ha-mcp/setup/
+
+Troubleshooting guide:
+https://homeassistant-ai.github.io/ha-mcp/faq/
+
+
+## HA MCP server client configuration
+
+For cursor, you need the following client configuration:
+```
+{
+  "mcpServers": {
+    "home-assistant": {
+      "url": "http://<MCP SERVER URL>:<MCP SERVER PORT>/mcp",
+      "transport": "http"
+    }
+  }
+}
+```
 
 # Tailscale container authentication key
 
