@@ -16,10 +16,10 @@
     - PiHole (opti.lan):
         icon: pi-hole.png
         href: http://opti.lan/admin
-        description: PiHole on nuc.lan
+        description: PiHole on opti.lan
         widget:
           type: pihole
-          url: http://nuc.lan
+          url: http://opti.lan
           version: 6
           key: "{{ pihole_key }}"
     - PiHole (nuc.lan):
@@ -31,6 +31,14 @@
           url: http://nuc.lan
           version: 6
           key: "{{ pihole_key }}"
+    - Tailscale:
+        icon: tailscale.png
+        href: https://login.tailscale.com
+        description: Tailscale VPN
+        widget:
+          type: tailscale
+          deviceid: {{ tailscale_deviceid }}  # found on Tailscale dashboard machine overview page
+          key: "{{ homepage_tailscale_key }}"
     - Unifi Controller:
         icon: unifi.png
         href: https://micro.lan:8443
@@ -40,14 +48,14 @@
           url: https://micro.lan:8443
           username: "{{ unifi_local_user }}"
           password: "{{ unifi_local_password }}"
-    - Tailscale:
-        icon: tailscale.png
-        href: https://login.tailscale.com
-        description: Tailscale VPN
-        widget:
-          type: tailscale
-          deviceid: {{ tailscale_deviceid }}  # found on Tailscale dashboard machine overview page
-          key: "{{ homepage_tailscale_key }}"
+    - EdgeRouter 10X:
+        icon: ubiquiti.png
+        href: https://192.168.1.1/
+        description: Ubiquiti EdgeRouter 10X
+    - D-Link DGS-1100-08P switch:
+        icon: mdi-switch
+        href: http://dlink.lan/
+        description: D-Link managed switch
 
 # https://gethomepage.dev/widgets/services/transmission/
 # https://gethomepage.dev/widgets/services/sonarr/
@@ -65,7 +73,7 @@
           rpcUrl: /transmission/
           # username: <optional>
           # password: <optional>
-    - Sonarr:
+    - Sonarr (TV):
         icon: sonarr.png
         href: http://micro.lan:8989
         description: Sonarr on micro.lan
@@ -73,7 +81,7 @@
           type: sonarr
           url: http://micro.lan:8989
           key: "{{ sonarr_api_key }}"
-    - Radarr:
+    - Radarr (Movies):
         icon: radarr.png
         href: http://micro.lan:7878
         description: Radarr on micro.lan
@@ -81,7 +89,7 @@
           type: radarr
           url: http://micro.lan:7878
           key: "{{ radarr_api_key }}"
-    - Lidarr:
+    - Lidarr (Music):
         icon: lidarr.png
         href: http://micro.lan:8686
         description: Lidarr on micro.lan
@@ -89,7 +97,7 @@
           type: lidarr
           url: http://micro.lan:8686
           key: "{{ lidarr_api_key }}"
-    - Prowlarr:
+    - Prowlarr (Indexers):
         icon: prowlarr.png
         href: http://micro.lan:9696
         description: Prowlarr on micro.lan
@@ -97,24 +105,6 @@
           type: prowlarr
           url: http://micro.lan:9696
           key: "{{ prowlarr_api_key }}"
-
-- Servers:
-    - Cockpit (micro.lan):
-        icon: cockpit.png
-        href: https://micro.lan:9090/
-        description: Cockpit on micro.lan
-    - Cockpit (nuc.lan):
-        icon: cockpit.png
-        href: https://nuc.lan:9090/
-        description: Cockpit on nuc.lan
-    - Cockpit (opti.lan):
-        icon: cockpit.png
-        href: https://opti.lan:9090/
-        description: Cockpit on opti.lan
-    - Cockpit (hex.lan):
-        icon: cockpit.png
-        href: https://hex.lan:9090/
-        description: Cockpit on hex.lan
 
 # https://gethomepage.dev/widgets/services/uptime-kuma/
 # https://gethomepage.dev/widgets/services/netalertx/
@@ -181,3 +171,21 @@
         icon: signal.png
         href: http://micro.lan:9922/v1/
         description: Signal Messenger REST API on micro.lan
+
+- Servers:
+    - Cockpit (micro.lan):
+        icon: cockpit.png
+        href: https://micro.lan:9090/
+        description: Cockpit on micro.lan
+    - Cockpit (nuc.lan):
+        icon: cockpit.png
+        href: https://nuc.lan:9090/
+        description: Cockpit on nuc.lan
+    - Cockpit (opti.lan):
+        icon: cockpit.png
+        href: https://opti.lan:9090/
+        description: Cockpit on opti.lan
+    - Cockpit (hex.lan):
+        icon: cockpit.png
+        href: https://hex.lan:9090/
+        description: Cockpit on hex.lan
