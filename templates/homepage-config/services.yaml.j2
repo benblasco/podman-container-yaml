@@ -135,13 +135,15 @@
     # the request carries a Bearer token. Set the token in NetAlertX (API / SYNC settings)
     # and the same value in host_vars/.../homepage.yml as homepage_netalertx_api_token.
     # Empty or wrong token → JSON.parse errors in the widget. version: 2 for NetAlertX >= 26.1.17.
+    # Note that the port for the API is the graphql port as described below:
+    # https://github.com/netalertx/NetAlertX/blob/main/docs/API.md
     - NetAlertX:
         icon: netalertx.png
         href: http://micro.lan:20211
         description: NetAlertX on micro.lan
         widget:
           type: netalertx
-          url: http://micro.lan:20211
+          url: http://micro.lan:20212
           key: "{{ homepage_netalertx_api_token }}"
           version: 2
     - Home Assistant:
