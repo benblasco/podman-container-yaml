@@ -51,5 +51,5 @@ You can also check what the currently running health check is via:
 - [Tailscale container authentication key](README.tailscale.md)
 - [Rsyslog server — Red Hat registry credentials](README.rsyslog-server.md)
 - [Signal CLI REST API](README.signal-api.md)
-- [Jenkins backups](README.jenkins-backup.md)
+- [Jenkins backups](README.jenkins.md)
 - [Docker registry certificates and garbage collection](README.docker-registry.md)
