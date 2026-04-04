@@ -35,112 +35,6 @@ Also great info if you run `man podman-systemd.unit`
 6. Check the service with `systemctl --user status <filename>.service`
 7. Don't forget to enable any firewall ports that need to be enabled
 
-# Ben's Home Assistant container Bluetooth config
-
-Rough notes on getting Bluetooth working here for posterity
-
-1. NOT REQUIRED edit the bluetooth.conf to allow me as a user all the relevant privileges?
-
-2. sudo chown -R bblasco:bblasco /home/bblasco/.local/share/containers/storage/volumes/h3-config/
-This is due to the following bug:
-"podman run is not honoring --userns=keep-id --user=1000:1000 settings while creating volumes"
-https://github.com/containers/podman/issues/16741
-
-4. Make the relevant SELinux changes on the system
-	1. You see something like this in /var/log/audit/audit.log: `type=USER_AVC msg=audit(1683117204.775:2041): pid=817 uid=81 auid=4294967295 ses=4294967295 subj=system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 msg='avc:  denied  { send_msg } for  scontext=system_u:system_r:bluetooth_t:s0 tcontext=unconfined_u:system_r:spc_t:s0 tclass=dbus permissive=0 exe="/usr/bin/dbus-broker" sauid=81 hostname=? addr=? terminal=?'UID="dbus" AUID="unset" SAUID="dbus"`
-	2. Check what the issue is: 
-```[root@opti ~]# grep tooth /var/log/audit/audit.log | tail -1 | audit2why
-type=USER_AVC msg=audit(1683117372.225:2274): pid=817 uid=81 auid=4294967295 ses=4294967295 subj=system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 msg='avc:  denied  { send_msg } for  scontext=system_u:system_r:bluetooth_t:s0 tcontext=unconfined_u:system_r:spc_t:s0 tclass=dbus permissive=0 exe="/usr/bin/dbus-broker" sauid=81 hostname=? addr=? terminal=?'UID="dbus" AUID="unset" SAUID="dbus"
-
-        Was caused by:
-                Missing type enforcement (TE) allow rule.
-
-                You can use audit2allow to generate a loadable module to allow this access.
-```
-
-    3. Generate the module:
-```
-[root@opti ~]# grep tooth /var/log/audit/audit.log | tail -1 | audit2allow -a -M bluetooth_homeassistant
-******************** IMPORTANT ***********************
-To make this policy package active, execute:
-
-semodule -i bluetooth_homeassistant.pp
-```
-# Home Assistant MCP server
-
-The home assistant pod contains this unofficial MCP server:
-https://github.com/homeassistant-ai/ha-mcp
-
-Setup guide:
-https://homeassistant-ai.github.io/ha-mcp/setup/
-
-Troubleshooting guide:
-https://homeassistant-ai.github.io/ha-mcp/faq/
-
-
-## HA MCP server client configuration
-
-For cursor, you need the following client configuration:
-```
-{
-  "mcpServers": {
-    "home-assistant": {
-      "url": "http://<MCP SERVER URL>:<MCP SERVER PORT>/mcp",
-      "transport": "http"
-    }
-  }
-}
-```
-
-# Tailscale container authentication key
-
-## Generate a new auth key after expiry
-
-Instructions:
-https://tailscale.com/kb/1085/auth-keys
-
-URL:
-https://login.tailscale.com/admin/settings/keys
-
-Example key: `tskey-auth-kf5TBXe2mA21CNTRL-8T6xic8qhBAzfJycEKEBAAiZH9Zp4oSRE`
-
-Then take that auth key and put it in the container pod definition
-
-```
-      env:
-        - name: TS_AUTHKEY
-          value: tskey-auth-kFwx5M8WTB21CNTRL-SDH44CBqKiizNLK3W7R2jizV4vUZ6BL1
-```
-
-# Red Hat container registry credentials for rsyslog server container
-
-Easiest to pass them on the command line when running the playbook, like this:
-
-```
-ansible-playbook run-podman-quadlet-rsyslog-server.yml -e "podman_registry_username=<your registry user>" -e "podman_registry_password=<your registry password>"
-
-```
-
-# Signal CLI REST API
-
-The Signal API runs on `micro.lan:9922`. After deploying, link your Signal number by visiting:
-
-```
-http://micro.lan:9922/v1/qrcodelink?device_name=signal-api
-```
-
-Then scan the QR code in the Signal app under Settings → Linked Devices.
-
-## Send a test message
-
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  'http://micro.lan:9922/v2/send' \
-  -d '{"message": "Hello Worlf", "number": "+61439655641", "recipients": ["+61439655641"]}'
-```
-
-A successful response returns HTTP 201 with a `{"timestamp":...}` body.
-
 # Pod/container healthchecks
 
 All the containers running here have liveness probes configured. You can check the health of the container with a command like: 
@@ -150,3 +44,12 @@ All the containers running here have liveness probes configured. You can check t
 You can also check what the currently running health check is via:
 
 `podman inspect <container name> --format '{{json .Config.Healthcheck}}'`
+
+# Additional documentation
+
+- [Home Assistant (Bluetooth, MCP server)](README.home-assistant.md)
+- [Tailscale container authentication key](README.tailscale.md)
+- [Rsyslog server — Red Hat registry credentials](README.rsyslog-server.md)
+- [Signal CLI REST API](README.signal-api.md)
+- [Jenkins backups](README.jenkins-backup.md)
+- [Docker registry certificates and garbage collection](README.docker-registry.md)
