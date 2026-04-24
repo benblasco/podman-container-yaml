@@ -1,0 +1,10 @@
+[Unit]
+Description=BentoPDF container run by Podman
+After=network-online.target
+
+[Kube]
+Yaml=pod-bentopdf.yml
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target

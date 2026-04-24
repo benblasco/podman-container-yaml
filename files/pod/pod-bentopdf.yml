@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bentopdf
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: bentopdf
+      image: ghcr.io/alam00000/bentopdf:latest
+      ports:
+        - containerPort: 8080
+          hostPort: 3612
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      livenessProbe:
+        tcpSocket:
+          port: 8080
+        initialDelaySeconds: 15
+        periodSeconds: 30
+        timeoutSeconds: 5
+        failureThreshold: 3
