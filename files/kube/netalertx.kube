@@ -1,11 +1,19 @@
 [Unit]
 Description=NetAlertX container run by Podman
 After=network-online.target
+# Limit restart attempts to avoid cyclic restarts
+StartLimitBurst=3
+StartLimitIntervalSec=300
 
 [Kube]
 Yaml=pod-netalertx.yml
 # host network is required for ARP scanning to discover devices on the LAN.
 Network=host
+
+[Service]
+# Recover from sd_notify race condition during boot storm
+Restart=on-failure
+RestartSec=15
 
 [Install]
 # Start by default on boot

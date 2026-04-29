@@ -2,6 +2,9 @@
 Description=Jenkins container run by Podman
 Before=local-fs.target
 After=network.target
+# Limit restart attempts to avoid cyclic restarts
+StartLimitBurst=3
+StartLimitIntervalSec=300
 
 [Kube]
 Yaml=pod-jenkins.yml

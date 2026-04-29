@@ -2,6 +2,9 @@
 Description=UBI Rsyslog container run by Podman
 Before=local-fs.target
 After=network.target
+# Limit restart attempts to avoid cyclic restarts
+StartLimitBurst=3
+StartLimitIntervalSec=300
 
 [Kube]
 Yaml=pod-rsyslog-server.yml
@@ -16,6 +19,11 @@ Yaml=pod-rsyslog-server.yml
 # with is using a second ip that is routed to the host ip instead (that
 # is what host.containers.internal) is.
 Network=pasta:-a,10.0.2.0,-n,24,-g,10.0.2.2,--dns-forward,10.0.2.3
+
+[Service]
+# Recover from sd_notify race condition during boot storm
+Restart=on-failure
+RestartSec=15
 
 [Install]
 # Start by default on boot

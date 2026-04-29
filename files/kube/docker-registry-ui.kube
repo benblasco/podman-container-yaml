@@ -2,9 +2,17 @@
 Description=Docker Registry UI container run by Podman
 Before=local-fs.target
 After=network.target docker-registry.service
+# Limit restart attempts to avoid cyclic restarts
+StartLimitBurst=3
+StartLimitIntervalSec=300
 
 [Kube]
 Yaml=pod-docker-registry-ui.yml
+
+[Service]
+# Recover from sd_notify race condition during boot storm
+Restart=on-failure
+RestartSec=15
 
 [Install]
 # Start by default on boot
