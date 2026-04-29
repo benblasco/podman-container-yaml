@@ -1,9 +1,15 @@
 [Unit]
 Description=Signal Messenger REST API container run by Podman
+Before=local-fs.target
 After=network-online.target
 
 [Kube]
 Yaml=pod-signal-api.yml
+
+[Service]
+# Recover from sd_notify race condition during boot storm
+Restart=on-failure
+RestartSec=15
 
 [Install]
 # Start by default on boot
