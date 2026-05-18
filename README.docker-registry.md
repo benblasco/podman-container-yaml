@@ -68,3 +68,71 @@ More reading:
 - [Docker registry garbage collection](https://stackoverflow.com/questions/45046752/docker-registry-garbage-collection)
 - [How to maintain a Private Docker Registry?](https://janethavishka.medium.com/how-to-maintain-a-private-docker-registry-d4f3d291e7d5)
 
+## Tip: garbage collect when the disk is full and podman exec fails
+
+If the disk is completely full, `podman exec` will fail because Podman cannot write its container state database. Use `nsenter` to bypass Podman and run the garbage collector directly inside the container's mount namespace:
+
+```bash
+# Find the registry process PID
+pgrep -a -f "registry serve"
+
+# Enter the container's mount namespace and run GC
+sudo nsenter -t <PID> -m -- \
+  /bin/registry garbage-collect --delete-untagged \
+  /etc/docker/registry/config.yml
+```
+
+# Automated image cleanup with skopeo-registry-cleaner.sh
+
+`files/docker-registry/skopeo-registry-cleaner.sh` is a bash script that iterates all repositories and tags in the registry and deletes any image older than a specified number of days, using `skopeo`. It handles both Docker Schema 2 and OCI manifests (e.g. bootc images), unlike tools built on the older `docker/distribution` library.
+
+## Dependencies
+
+- `skopeo` — image inspection and deletion
+- `curl` — fetches the repository list from the registry `/v2/_catalog` endpoint
+- `jq` — parses JSON responses
+
+All three are standard on Fedora.
+
+## Parameters
+
+Both parameters are required; the script exits with an error and prints usage if either is missing.
+
+| Parameter | Description |
+|---|---|
+| `--registry <URL>` | Full URL of the registry, including scheme (e.g. `https://nuc.lan:5000`) |
+| `--days <N>` | Images created more than N days ago will be deleted |
+
+All `skopeo` calls use `--tls-verify=false`, so self-signed certificates are handled automatically.
+
+## Usage
+
+```bash
+skopeo-registry-cleaner.sh --registry https://nuc.lan:5000 --days 33
+```
+
+## Automated deployment via systemd timer
+
+The script is deployed and scheduled automatically by `run-podman-quadlet-docker-registry.yml` using the `fedora.linux_system_roles.systemd` role. Two unit files in `files/docker-registry/` are deployed as user units for `bblasco`:
+
+| File | Purpose |
+|---|---|
+| `docker-registry-cleaner.service` | Oneshot service: runs `skopeo-registry-cleaner.sh` then podman GC |
+| `docker-registry-cleaner.timer` | Fires daily at 05:30; `Persistent=true` catches missed runs on boot |
+
+The service depends on `docker-registry.service` (`Requires=` + `After=`) so it fails gracefully if the registry is not running. The script is installed to `/var/usrlocal/bin/skopeo-registry-cleaner.sh` (the writable overlay path used on bootc systems).
+
+To check the timer status on a host:
+
+```bash
+systemctl --user status docker-registry-cleaner.timer
+systemctl --user list-timers docker-registry-cleaner.timer
+```
+
+To run the cleanup manually without waiting for the timer:
+
+```bash
+systemctl --user start docker-registry-cleaner.service
+journalctl --user -u docker-registry-cleaner.service -f
+```
+

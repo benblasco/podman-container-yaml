@@ -1,0 +1,12 @@
+[Unit]
+Description=Docker Registry image cleanup and garbage collection
+Requires=docker-registry.service
+After=docker-registry.service
+
+[Service]
+Type=oneshot
+ExecStart=/var/usrlocal/bin/skopeo-registry-cleaner.sh --registry https://localhost:5000 --days 33
+ExecStart=podman exec docker-registry-docker-registry bin/registry garbage-collect --delete-untagged /etc/docker/registry/config.yml
+
+[Install]
+WantedBy=default.target

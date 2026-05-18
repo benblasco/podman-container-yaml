@@ -18,3 +18,39 @@
         state: started
   roles:
     - fedora.linux_system_roles.podman
+
+- name: Deploy Docker Registry cleanup timer
+  hosts: micro.lan,nuc.lan
+  become: true
+  vars:
+    systemd_unit_files:
+      - item: docker-registry/docker-registry-cleaner.service
+        user: bblasco
+        state: present
+      - item: docker-registry/docker-registry-cleaner.timer
+        user: bblasco
+        state: present
+    systemd_enabled_units:
+      - item: docker-registry-cleaner.timer
+        user: bblasco
+    systemd_started_units:
+      - item: docker-registry-cleaner.timer
+        user: bblasco
+  pre_tasks:
+    - name: Ensure /var/usrlocal/bin exists
+      ansible.builtin.file:
+        path: /var/usrlocal/bin
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Deploy skopeo-registry-cleaner script
+      ansible.builtin.copy:
+        src: docker-registry/skopeo-registry-cleaner.sh
+        dest: /var/usrlocal/bin/skopeo-registry-cleaner.sh
+        mode: "0755"
+        owner: root
+        group: root
+  roles:
+    - fedora.linux_system_roles.systemd
