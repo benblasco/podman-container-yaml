@@ -38,11 +38,17 @@ spec:
           value: '[Authorization,Accept,Cache-Control]'
         - name: REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers
           value: '[Docker-Content-Digest]'
+      # registry:2 has wget but not curl; httpGet probes become curl and fail.
+      # Use 127.0.0.1 rather than localhost (IPv6 is not in use).
       livenessProbe:
-        httpGet:
-          path: /v2/
-          port: 5000
-          scheme: HTTPS
+        exec:
+          command:
+            - wget
+            - -q
+            - -O
+            - /dev/null
+            - --no-check-certificate
+            - https://127.0.0.1:5000/v2/
         initialDelaySeconds: 30
         periodSeconds: 10
         timeoutSeconds: 5
