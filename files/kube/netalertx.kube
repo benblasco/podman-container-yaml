@@ -1,8 +1,10 @@
 [Unit]
 Description=NetAlertX container run by Podman
 After=network-online.target
+# Boot stagger: Tier 4
+RandomizedDelaySec=240s
 # Limit restart attempts to avoid cyclic restarts
-StartLimitBurst=3
+StartLimitBurst=5
 StartLimitIntervalSec=300
 
 [Kube]
@@ -14,6 +16,7 @@ Network=host
 # Recover from sd_notify race condition during boot storm
 Restart=on-failure
 RestartSec=15
+TimeoutStartSec=180
 
 [Install]
 # Start by default on boot

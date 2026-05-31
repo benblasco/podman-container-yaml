@@ -35,6 +35,61 @@ Also great info if you run `man podman-systemd.unit`
 6. Check the service with `systemctl --user status <filename>.service`
 7. Don't forget to enable any firewall ports that need to be enabled
 
+# Boot startup stagger
+
+At boot, every enabled Quadlet service is pulled in by `default.target` and tends to start at once. On a host running many pods, that creates a CPU spike that can cause systemd to time out units (default 90s) or exhaust the start-retry limit, leaving services in a `failed` state until someone notices.
+
+Each `.kube` file in [`files/kube/`](files/kube/) configures three systemd directives to reduce this:
+
+| Directive | Purpose |
+|-----------|---------|
+| `RandomizedDelaySec` | Waits a random interval between 0 and N seconds before starting, spreading load across boot |
+| `TimeoutStartSec` | Maximum time systemd waits for `podman kube play` to become ready (heavy pods need more than the 90s default) |
+| `StartLimitBurst` | Number of start attempts allowed within `StartLimitIntervalSec` before systemd gives up (raised from 3 to 5) |
+
+## Priority tiers
+
+Tier **1** is highest priority (starts earliest); tier **4** is lowest (starts latest). Each `.kube` file includes a `# Boot stagger: Tier N` comment.
+
+| Tier | Typical delay | Services |
+|------|---------------|----------|
+| 1 | 30–60s | Pi-hole, Tailscale, Signal API, Uptime Kuma, Home Assistant, UniFi |
+| 2 | 90s | Docker Registry, Docker Registry UI, Jenkins, Homepage, iSponsorBlockTV |
+| 3 | 120–150s | Transmission, ESPHome, Arrsuite |
+| 4 | 240s | BentoPDF, Boot server, NetAlertX, Rsyslog-server, HashiCorp Vault |
+
+### Per-service values
+
+| Tier | Service | `RandomizedDelaySec` | `TimeoutStartSec` |
+|------|---------|---------------------|-------------------|
+| 1 | Pi-hole | 30s | 180s |
+| 1 | Tailscale | 30s | 180s |
+| 1 | Signal API | 45s | 180s |
+| 1 | Uptime Kuma | 45s | 180s |
+| 1 | Home Assistant | 60s | 300s |
+| 1 | UniFi | 60s | 600s |
+| 2 | Docker Registry | 90s | 180s |
+| 2 | Docker Registry UI | 90s | 180s |
+| 2 | Jenkins | 90s | 600s |
+| 2 | Homepage | 90s | 240s |
+| 2 | iSponsorBlockTV | 90s | 180s |
+| 3 | Transmission | 120s | 180s |
+| 3 | ESPHome | 150s | 180s |
+| 3 | Arrsuite | 150s | 300s |
+| 4 | BentoPDF | 240s | 180s |
+| 4 | Boot server | 240s | 180s |
+| 4 | NetAlertX | 240s | 180s |
+| 4 | Rsyslog-server | 240s | 180s |
+| 4 | HashiCorp Vault | 240s | 180s |
+
+To change a service's tier, edit its `.kube` file (tier comment, `RandomizedDelaySec`, and `TimeoutStartSec`), then redeploy with the matching `run-podman-quadlet-*.yml` playbook.
+
+Verify on a deployed host:
+
+```bash
+systemctl --user show pihole.service -p RandomizedDelaySec,TimeoutStartSec,StartLimitBurst
+```
+
 # Pod/container healthchecks
 
 All the containers running here have liveness probes configured. You can check the health of the container with a command like: 

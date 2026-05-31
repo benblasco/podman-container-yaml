@@ -2,8 +2,10 @@
 Description=Ubiquiti Unifi controller container run by Podman
 #Before=local-fs.target
 After=network-online.target
+# Boot stagger: Tier 1
+RandomizedDelaySec=60s
 # Limit restart attempts to avoid cyclic restarts
-StartLimitBurst=3
+StartLimitBurst=5
 StartLimitIntervalSec=300
 
 [Kube]
@@ -13,6 +15,7 @@ Yaml=pod-unifi.yml
 # Recover from sd_notify race condition during boot storm
 Restart=on-failure
 RestartSec=15
+TimeoutStartSec=600
 
 [Install]
 # Start by default on boot
