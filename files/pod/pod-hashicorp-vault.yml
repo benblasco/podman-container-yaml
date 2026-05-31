@@ -28,7 +28,9 @@ metadata:
 spec:
   containers:
     - name: vault
-      image: docker.io/hashicorp/vault:latest
+      # Note: Hard coding this 1.21.4 release until this issue is fixed:
+      # https://github.com/hashicorp/vault/issues/31919
+      image: docker.io/hashicorp/vault:1.21.4
       ports:
         - containerPort: 8200
           hostPort: 8200

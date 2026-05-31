@@ -8,6 +8,9 @@ spec:
   containers:
     - name: jenkins
       image: docker.io/jenkins/jenkins:lts-jdk17
+      # Changed HTTP KeepAlive Timeout to avoid race condition for Jenkins MCP server
+      # https://plugins.jenkins.io/mcp-server/
+      args: ["--httpKeepAliveTimeout=600000"] # Overrides Docker CMD
       ports:
         - containerPort: 8080
           hostPort: 18080
