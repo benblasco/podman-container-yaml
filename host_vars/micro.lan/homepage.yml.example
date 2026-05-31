@@ -7,6 +7,7 @@ tailscale_deviceid: ""
 
 unifi_local_user: ""
 unifi_local_password: ""
+unifi_site: "default"
 
 sonarr_api_key: ""
 radarr_api_key: ""
