@@ -7,6 +7,9 @@ RandomizedDelaySec=90s
 # Limit restart attempts to avoid cyclic restarts
 StartLimitBurst=5
 StartLimitIntervalSec=300
+# Call the service to send a notification to the user via Signal on failure
+OnFailure=signal-failure-notify@%n.service
+
 
 [Kube]
 Yaml=pod-homepage.yml

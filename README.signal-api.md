@@ -48,3 +48,18 @@ MONITOR_UNIT=homepage.service MONITOR_SERVICE_RESULT=exit-code MONITOR_EXIT_STAT
 If `signal-api.service` is down, the webhook call fails silently (`curl -sf`).
 
 More API examples: [signal-cli-rest-api EXAMPLES.md](https://github.com/bbernhard/signal-cli-rest-api/blob/master/doc/EXAMPLES.md).
+
+## A note on group creation in Signal and retrieving the Group ID string
+
+If you create a group in the Signal app (e.g. via your phone) and want to send notifications to that group, you will need to synchronise the Signal API container before being able to retrieve the Group ID (which will look something like `group.UjlLNG4wNkpFY2kyc0I2a21oUWpPbU31T1J6QnI4blRxN2t2cnBNTHgvVT0=`).
+
+Synchronise the container as follows:
+```
+podman exec -it signal-api-signal-api /bin/bash
+signal-cli --config /home/.local/share/signal-cli sendSyncRequest
+```
+
+Then grab the list of groups to fetch the Group ID with the following command:
+```
+curl -X GET -H "Content-Type: application/json" 'http://<Signal API container host>:9922/v1/groups/<your phone number>' | jq 
+```
