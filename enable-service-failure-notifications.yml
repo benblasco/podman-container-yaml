@@ -1,0 +1,31 @@
+---
+# Deploy Signal failure-notification infrastructure on hosts.
+#
+# Installs /var/usrlocal/bin/systemd-failure-notify.sh and registers
+# signal-failure-notify@.service in each listed systemd user scope.
+# Services must still set OnFailure=signal-failure-notify@%n.service
+# (e.g. in a quadlet [Unit] section) to send notifications on failure.
+#
+# Prerequisites:
+#   ansible-galaxy collection install -r requirements.yml
+#   group_vars/all/signal-notify.yml (copy from signal-notify.yml.example)
+#
+# Run:
+#   ansible-playbook -i hosts enable-service-failure-notifications.yml
+
+- name: Enable Signal failure notification handlers
+  hosts: micro.lan,nuc.lan,opti.lan,hex.lan
+  become: true
+  vars:
+    # System manager (root) plus user managers used by quadlets in this repo.
+    signal_failure_notify_users:
+      - root
+      - bblasco
+      - media
+  tasks:
+    - name: Install notify script and handler unit for each systemd user
+      ansible.builtin.include_role:
+        name: signal_failure_notify
+      vars:
+        user: "{{ item }}"
+      loop: "{{ signal_failure_notify_users }}"

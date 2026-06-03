@@ -1,0 +1,9 @@
+---
+# Copy this file to signal-notify.yml and set real values.
+# signal-notify.yml is gitignored to prevent committing live credentials.
+# Same variables as backups-personal group_vars/all/backups-config.yml — use the
+# same values there (webhook, sender number, group id). See README.signal-api.md
+# and enable-service-failure-notifications.yml.
+webhook_url: "http://your-host:9922/v2/send"
+signal_number: "+1234567890"
+signal_group_id: "your-group-id-here"

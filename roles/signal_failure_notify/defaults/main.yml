@@ -1,0 +1,4 @@
+---
+# Required when including this role: user (root, bblasco, or media).
+# Install shared script only once per host (when user is root).
+signal_failure_notify_install_script: "{{ user == 'root' }}"

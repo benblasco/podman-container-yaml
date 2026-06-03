@@ -1,0 +1,8 @@
+# Source: https://github.com/benblasco/podman-container-yaml
+[Unit]
+Description=Signal notification for failed unit %i
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/var/usrlocal/bin/systemd-failure-notify.sh

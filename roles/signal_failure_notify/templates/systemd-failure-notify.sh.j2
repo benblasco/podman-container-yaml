@@ -1,0 +1,36 @@
+#!/bin/bash
+# Source: https://github.com/benblasco/podman-container-yaml
+#
+# Signal notification for units that failed with OnFailure=signal-failure-notify@%n.service
+# Deployed to /var/usrlocal/bin/ (writable path on bootc systems).
+# systemd injects MONITOR_* into the handler unit environment.
+#
+# Manual test:
+#   MONITOR_UNIT=homepage.service MONITOR_SERVICE_RESULT=exit-code MONITOR_EXIT_STATUS=1 \
+#     MONITOR_INVOCATION_ID="$(systemctl --user show homepage.service -p InvocationID --value)" \
+#     /var/usrlocal/bin/systemd-failure-notify.sh
+
+UNIT="${MONITOR_UNIT:-unknown}"
+RESULT="${MONITOR_SERVICE_RESULT:-unknown}"
+EXIT_STATUS="${MONITOR_EXIT_STATUS:-}"
+
+OUTPUT=""
+if [[ -n "${MONITOR_INVOCATION_ID:-}" ]]; then
+  OUTPUT=$(journalctl --user _SYSTEMD_INVOCATION_ID="${MONITOR_INVOCATION_ID}" -n 5 \
+    --no-pager --output=cat 2>/dev/null | paste -s -d' ')
+  if [[ -z "${OUTPUT}" ]]; then
+    OUTPUT=$(journalctl _SYSTEMD_INVOCATION_ID="${MONITOR_INVOCATION_ID}" -n 5 \
+      --no-pager --output=cat 2>/dev/null | paste -s -d' ')
+  fi
+fi
+
+MESSAGE="${UNIT}: ${RESULT} (exit ${EXIT_STATUS}) | ${OUTPUT}"
+
+jq -n \
+  --arg msg "$MESSAGE" \
+  --arg num "{{ signal_number }}" \
+  --arg rid "{{ signal_group_id }}" \
+  '{message: $msg, number: $num, recipients: [$rid]}' \
+| curl -sf -X POST "{{ webhook_url }}" \
+  -H "Content-Type: application/json" \
+  -d @-

@@ -1,0 +1,34 @@
+---
+- name: Validate required role variable user
+  ansible.builtin.assert:
+    that:
+      - user is defined
+      - user in ['root', 'bblasco', 'media']
+    fail_msg: "signal_failure_notify role requires user (root, bblasco, or media)"
+
+- name: Ensure /var/usrlocal/bin exists
+  ansible.builtin.file:
+    path: /var/usrlocal/bin
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: signal_failure_notify_install_script | bool
+
+- name: Deploy systemd-failure-notify.sh
+  ansible.builtin.template:
+    src: systemd-failure-notify.sh.j2
+    dest: /var/usrlocal/bin/systemd-failure-notify.sh
+    mode: "0755"
+    owner: root
+    group: root
+  when: signal_failure_notify_install_script | bool
+
+- name: Deploy signal-failure-notify handler unit
+  ansible.builtin.include_role:
+    name: fedora.linux_system_roles.systemd
+  vars:
+    systemd_unit_files:
+      - item: signal_failure_notify/signal-failure-notify@.service
+        user: "{{ user }}"
+        state: present
