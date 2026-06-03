@@ -35,10 +35,17 @@ spec:
           value: Australia/Melbourne
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: '*'
+      # homepage has wget but not curl; httpGet probes become curl and fail.
+      # Pasta networking (see homepage.kube) binds Next.js to the container
+      # hostname (homepage), not loopback.
       livenessProbe:
-        httpGet:
-          path: /
-          port: 3000
+        exec:
+          command:
+            - wget
+            - -q
+            - -O
+            - /dev/null
+            - http://homepage:3000/
         initialDelaySeconds: 30
         periodSeconds: 10
         timeoutSeconds: 5
