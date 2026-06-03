@@ -53,6 +53,9 @@ More API examples: [signal-cli-rest-api EXAMPLES.md](https://github.com/bbernhar
 
 If you create a group in the Signal app (e.g. via your phone) and want to send notifications to that group, you will need to synchronise the Signal API container before being able to retrieve the Group ID (which will look something like `group.UjlLNG4wNkpFY2kyc0I2a21oUWpPbU31T1J6QnI4blRxN2t2cnBNTHgvVT0=`).
 
+Please see Git issue [listGroups not showing new groups
+#1602](https://github.com/AsamK/signal-cli/issues/1602)
+
 Synchronise the container as follows:
 ```
 podman exec -it signal-api-signal-api /bin/bash
