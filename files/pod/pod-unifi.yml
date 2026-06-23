@@ -49,6 +49,12 @@ spec:
       volumeMounts:
         - mountPath: /unifi
           name: unifi
+        # Volume below is for ephemeral runtime data, and prevents
+        # creation of anonymous volume because of the VOLUME declaration
+        # in the source Dockerfile.
+        # See: https://github.com/jacobalberty/unifi/blob/main/Dockerfile#L21
+        - mountPath: /unifi/run
+          name: unifi-runtime-data
       # Note I wasn't able to make AP adoption work without adding
       # the security context set below
       # Inspiration courtesy link below:
@@ -92,3 +98,6 @@ spec:
     - name: unifi
       persistentVolumeClaim:
         claimName: unifi
+    - name: unifi-runtime-data
+      persistentVolumeClaim:
+        claimName: unifi-runtime-data
