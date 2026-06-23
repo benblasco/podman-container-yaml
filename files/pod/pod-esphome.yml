@@ -18,6 +18,12 @@ spec:
       volumeMounts:
         - mountPath: /config
           name: esphome-config
+        # Ephemeral PlatformIO toolchains (~2 GB). See README.esphome.md.
+        - mountPath: /cache
+          name: esphome-cache
+        # Ephemeral compile artifacts. See README.esphome.md.
+        - mountPath: /build
+          name: esphome-build
       env:
         - name: TZ
           value: Australia/Melbourne
@@ -43,3 +49,7 @@ spec:
     - name: esphome-config
       persistentVolumeClaim:
         claimName: esphome-config
+    - name: esphome-cache
+      emptyDir: {}
+    - name: esphome-build
+      emptyDir: {}

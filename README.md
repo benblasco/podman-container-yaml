@@ -103,6 +103,7 @@ You can also check what the currently running health check is via:
 # Additional documentation
 
 - [Home Assistant (Bluetooth, MCP server)](README.home-assistant.md)
+- [ESPHome storage layout and cleanup](README.esphome.md)
 - [Tailscale container authentication key](README.tailscale.md)
 - [Rsyslog server — Red Hat registry credentials](README.rsyslog-server.md)
 - [Signal CLI REST API](README.signal-api.md) (includes [failure notifications](README.signal-api.md#service-failure-notifications) via `enable-service-failure-notifications.yml`)
