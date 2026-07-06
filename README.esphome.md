@@ -28,8 +28,17 @@ flowchart TB
 | Mount | Volume type | Podman volume | Holds |
 |-------|-------------|---------------|-------|
 | `/config` | `persistentVolumeClaim` | `esphome-config` | Device YAML configs, `secrets.yaml`, `.esphome/storage`, `.device-builder.json`, optional `.git` |
-| `/cache` | `emptyDir` | anonymous (ephemeral) | PlatformIO packages, platforms, and cache (`/cache/platformio`) |
-| `/build` | `emptyDir` | anonymous (ephemeral) | Per-device compile output (`ESPHOME_BUILD_PATH=/build`) |
+| `/cache` | `emptyDir` | `esphome-cache` (ephemeral) | PlatformIO packages, platforms, and cache (`/cache/platformio`) |
+| `/build` | `emptyDir` | `esphome-build` (ephemeral) | Per-device compile output (`ESPHOME_BUILD_PATH=/build`) |
+
+`podman kube play` creates named volumes for all three mounts — emptyDir volumes are not nameless in `podman volume ls`. They are still ephemeral: Podman removes them when the pod is removed. You can tell PVC from emptyDir with `podman volume inspect`:
+
+```bash
+podman volume inspect esphome-config esphome-cache esphome-build \
+  --format '{{.Name}}: anonymous={{.Anonymous}}'
+```
+
+`esphome-config` has `anonymous=false`; `esphome-cache` and `esphome-build` have `anonymous=true`. The two emptyDir volumes are otherwise identical in inspect output — distinguish them by name or via container mounts (`podman inspect esphome-esphome --format '{{range .Mounts}}{{.Name}} -> {{.Destination}}{{println}}{{end}}'`).
 
 On micro.lan the persistent volume data lives at:
 

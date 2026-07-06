@@ -102,10 +102,11 @@ You can also check what the currently running health check is via:
 
 # Additional documentation
 
-- [Home Assistant (Bluetooth, MCP server)](README.home-assistant.md)
+- [Home Assistant (Bluetooth, MCP, Goodwe dashboard)](README.home-assistant.md)
 - [ESPHome storage layout and cleanup](README.esphome.md)
 - [Tailscale container authentication key](README.tailscale.md)
 - [Rsyslog server — Red Hat registry credentials](README.rsyslog-server.md)
 - [Signal CLI REST API](README.signal-api.md) (includes [failure notifications](README.signal-api.md#service-failure-notifications) via `enable-service-failure-notifications.yml`)
 - [Jenkins backups](README.jenkins.md)
 - [Docker registry certificates and garbage collection](README.docker-registry.md)
+- [Selective volume backup labeling](README.volume-backup-labeling.md) (design notes; selective labeling not implemented; all named volumes backed up via [backups-personal](https://github.com/benblasco/backups-personal))
