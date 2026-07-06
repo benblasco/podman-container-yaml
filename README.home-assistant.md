@@ -105,6 +105,8 @@ For cursor, you need the following client configuration:
 }
 ```
 
+In my case the URL line reads as `"url": "http://micro.lan:8086/mcp"`
+
 # Ben's Home Assistant container Bluetooth config
 
 Rough notes on getting Bluetooth working here for posterity
