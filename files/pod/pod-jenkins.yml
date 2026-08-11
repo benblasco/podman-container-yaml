@@ -7,7 +7,8 @@ metadata:
 spec:
   containers:
     - name: jenkins
-      image: docker.io/jenkins/jenkins:lts-jdk17
+      #image: docker.io/jenkins/jenkins:lts-jdk17
+      image: docker.io/jenkins/jenkins:rhel-ubi9-jdk25
       # Changed HTTP KeepAlive Timeout to avoid race condition for Jenkins MCP server
       # https://plugins.jenkins.io/mcp-server/
       args: ["--httpKeepAliveTimeout=600000"] # Overrides Docker CMD
