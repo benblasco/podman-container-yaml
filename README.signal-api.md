@@ -8,6 +8,8 @@ http://micro.lan:9922/v1/qrcodelink?device_name=signal-api
 
 Then scan the QR code in the Signal app under Settings → Linked Devices.
 
+*Note: * This step is also required if transferring Signal between phones.
+
 ## Send a test message
 
 ```bash
