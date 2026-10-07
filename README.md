@@ -54,7 +54,7 @@ Tier **1** is highest priority (starts earliest); tier **4** is lowest (starts l
 | Tier | Typical delay | Services |
 |------|---------------|----------|
 | 1 | 30–60s | Pi-hole, Tailscale, Signal API, Uptime Kuma, Home Assistant, UniFi |
-| 2 | 90s | Docker Registry, Docker Registry UI, Jenkins, Homepage, iSponsorBlockTV |
+| 2 | 90s | Docker Registry, Docker Registry UI, Forgejo, Forgejo runner, Jenkins, Homepage, iSponsorBlockTV |
 | 3 | 120–150s | Transmission, ESPHome, Arrsuite |
 | 4 | 240s | BentoPDF, Boot server, NetAlertX, Rsyslog-server, HashiCorp Vault |
 
@@ -70,6 +70,8 @@ Tier **1** is highest priority (starts earliest); tier **4** is lowest (starts l
 | 1 | UniFi | 60s | 600s |
 | 2 | Docker Registry | 90s | 180s |
 | 2 | Docker Registry UI | 90s | 180s |
+| 2 | Forgejo | 90s | 300s |
+| 2 | Forgejo runner | 120s | 300s |
 | 2 | Jenkins | 90s | 600s |
 | 2 | Homepage | 90s | 240s |
 | 2 | iSponsorBlockTV | 90s | 180s |
@@ -107,6 +109,7 @@ You can also check what the currently running health check is via:
 - [Tailscale container authentication key](README.tailscale.md)
 - [Rsyslog server — Red Hat registry credentials](README.rsyslog-server.md)
 - [Signal CLI REST API](README.signal-api.md) (includes [failure notifications](README.signal-api.md#service-failure-notifications) via `enable-service-failure-notifications.yml`)
+- [Forgejo and Actions runners](README.forgejo.md)
 - [Jenkins backups](README.jenkins.md)
 - [Docker registry certificates and garbage collection](README.docker-registry.md)
 - [Selective volume backup labeling](README.volume-backup-labeling.md) (design notes; selective labeling not implemented; all named volumes backed up via [backups-personal](https://github.com/benblasco/backups-personal))

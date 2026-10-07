@@ -3,3 +3,4 @@ host_vars/*/homepage.yml
 host_vars/*/homeassistant.yml
 group_vars/*/tailscale.yml
 group_vars/all/signal-notify.yml
+host_vars/*/forgejo-runner.yml

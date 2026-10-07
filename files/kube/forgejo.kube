@@ -1,0 +1,26 @@
+[Unit]
+Description=Forgejo container run by Podman
+After=network-online.target
+# Boot stagger: Tier 2
+RandomizedDelaySec=90s
+# Limit restart attempts to avoid cyclic restarts
+StartLimitBurst=5
+StartLimitIntervalSec=300
+# Call the service to send a notification to the user via Signal on failure
+OnFailure=signal-failure-notify@%n.service
+
+[Kube]
+Yaml=pod-forgejo.yml
+UserNS=keep-id
+# Pasta for host/DNS reachability; see files/kube/transmission.kube
+Network=pasta:-a,10.0.3.0,-n,24,-g,10.0.3.2,--dns-forward,10.0.3.3
+
+[Service]
+# Recover from sd_notify race condition during boot storm
+Restart=on-failure
+RestartSec=15
+TimeoutStartSec=300
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target

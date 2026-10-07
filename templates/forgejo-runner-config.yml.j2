@@ -1,0 +1,26 @@
+log:
+  level: info
+  job_level: info
+
+server:
+  connections:
+    forgejo:
+      url: {{ forgejo_instance_url }}
+      uuid: {{ forgejo_runner_uuid }}
+      token: {{ forgejo_runner_token }}
+
+runner:
+  file: .runner
+  capacity: 1
+  timeout: 3h
+  shutdown_timeout: 3h
+  labels:
+{% for label in forgejo_runner_labels %}
+    - {{ label }}
+{% endfor %}
+
+cache:
+  enabled: true
+
+container:
+  privileged: false

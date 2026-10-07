@@ -1,0 +1,48 @@
+---
+- name: Deploy Forgejo server (kube quadlet)
+  hosts: forgejo_server
+  become: true
+  vars:
+    podman_run_as_user: bblasco
+    podman_run_as_group: bblasco
+    podman_firewall:
+      - port: 3000/tcp
+        state: enabled
+      - port: 2222/tcp
+        state: enabled
+    podman_quadlet_specs:
+      - file_src: pod/pod-forgejo.yml
+      - file_src: kube/forgejo.kube
+        state: started
+  roles:
+    - fedora.linux_system_roles.podman
+
+- name: Deploy Forgejo Actions runners (kube quadlet)
+  hosts: forgejo_runner
+  become: true
+  vars:
+    podman_run_as_user: bblasco
+    podman_run_as_group: bblasco
+    forgejo_runner_labels:
+      - docker:docker://node:lts
+    podman_quadlet_specs:
+      - template_src: pod/pod-forgejo-runner.yml.j2
+      - file_src: kube/forgejo-runner.kube
+        state: started
+  # Forgejo Runner starts workflow *job* containers via a container API (Docker-compatible).
+  # Rootless Podman exposes that API on the user podman.socket unit; without it the runner
+  # fails with "cannot connect to docker daemon". See:
+  # https://forgejo.org/docs/latest/admin/actions/runner-installation/#setting-up-the-container-environment
+  pre_tasks:
+    - name: Enable rootless podman API socket for Actions job containers
+      become: true
+      become_user: "{{ podman_run_as_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ podman_socket_uid | default(1000) }}"
+      ansible.builtin.systemd:
+        name: podman.socket
+        enabled: true
+        state: started
+        scope: user
+  roles:
+    - fedora.linux_system_roles.podman

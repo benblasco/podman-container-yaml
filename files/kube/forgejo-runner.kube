@@ -1,0 +1,21 @@
+[Unit]
+Description=Forgejo Actions runner container run by Podman
+After=network-online.target
+# Boot stagger: Tier 2
+RandomizedDelaySec=120s
+StartLimitBurst=5
+StartLimitIntervalSec=300
+OnFailure=signal-failure-notify@%n.service
+
+[Kube]
+Yaml=pod-forgejo-runner.yml
+UserNS=keep-id
+Network=pasta:-a,10.0.3.0,-n,24,-g,10.0.3.2,--dns-forward,10.0.3.3
+
+[Service]
+Restart=on-failure
+RestartSec=15
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target default.target

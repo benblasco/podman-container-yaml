@@ -1,0 +1,9 @@
+---
+# Copy to forgejo-runner.yml (gitignored). One file per runner host.
+# Forgejo UI → Site administration → Actions → Runners → create runner named
+# <inventory_hostname_short>-runner (e.g. opti-runner on opti.lan).
+forgejo_runner_uuid: REPLACE_WITH_UUID
+forgejo_runner_token: REPLACE_WITH_TOKEN
+forgejo_runner_labels:
+  - docker:docker://node:lts
+podman_socket_uid: 1000

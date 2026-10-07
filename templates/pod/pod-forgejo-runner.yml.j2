@@ -1,0 +1,65 @@
+# Forgejo Actions runner (rootless). UI pre-registration: server.connections + local .runner state.
+# Job containers: runner uses DOCKER_HOST + mounted podman.sock (host rootless API socket).
+# https://forgejo.org/docs/latest/admin/actions/runner-installation/#setting-up-the-container-environment
+# https://forgejo.org/docs/latest/admin/actions/registration/
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ inventory_hostname_short }}-runner
+  annotations:
+    volume.podman.io/mount-options-for-podman-socket: z
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: {{ inventory_hostname_short }}-runner
+      image: data.forgejo.org/forgejo/runner:6.2.0
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        - name: XDG_RUNTIME_DIR
+          value: /run/user/{{ podman_socket_uid }}
+        # Rootless Podman API (see Forgejo runner installation docs).
+        - name: DOCKER_HOST
+          value: unix:///run/user/{{ podman_socket_uid }}/podman/podman.sock
+        - name: RUNNER_CONFIG_B64
+          value: "{{ lookup('template', playbook_dir + '/templates/forgejo-runner-config.yml.j2') | b64encode }}"
+        - name: RUNNER_STATE_B64
+          value: "{{ lookup('template', playbook_dir + '/templates/forgejo-runner-dot-runner.json.j2') | b64encode }}"
+      volumeMounts:
+        - mountPath: /data
+          name: forgejo-runner-data
+        - mountPath: /run/user/{{ podman_socket_uid }}/podman/podman.sock
+          name: podman-socket
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        # Allow use of host podman.sock under SELinux enforcing (same pattern as Pi-hole).
+        seLinuxOptions:
+          type: spc_t
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          cd /data
+          echo "$RUNNER_CONFIG_B64" | base64 -d > /data/config.yml
+          echo "$RUNNER_STATE_B64" | base64 -d > /data/.runner
+          exec forgejo-runner --config /data/config.yml daemon
+      livenessProbe:
+        exec:
+          command:
+            - /bin/sh
+            - -c
+            - pgrep -x forgejo-runner
+        initialDelaySeconds: 60
+        periodSeconds: 30
+        timeoutSeconds: 5
+        failureThreshold: 3
+  volumes:
+    - name: forgejo-runner-data
+      persistentVolumeClaim:
+        claimName: forgejo-runner-data
+    - name: podman-socket
+      hostPath:
+        path: /run/user/{{ podman_socket_uid }}/podman/podman.sock
+        type: Socket

@@ -1,0 +1,7 @@
+{
+  "uuid": "{{ forgejo_runner_uuid }}",
+  "name": "{{ inventory_hostname_short }}-runner",
+  "token": "{{ forgejo_runner_token }}",
+  "address": "{{ forgejo_instance_url }}",
+  "labels": {{ forgejo_runner_labels | to_json }}
+}

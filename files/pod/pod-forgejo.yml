@@ -1,0 +1,43 @@
+# Rootless Forgejo (v15 LTS). See https://forgejo.org/docs/v15.0/admin/installation/docker/
+# Data path for -rootless images is /var/lib/gitea (not /data).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: forgejo
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  containers:
+    - name: forgejo
+      image: codeberg.org/forgejo/forgejo:15-rootless
+      ports:
+        - containerPort: 3000
+          hostPort: 3000
+        - containerPort: 2222
+          hostPort: 2222
+      volumeMounts:
+        - mountPath: /var/lib/gitea
+          name: forgejo-data
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+        - name: USER_UID
+          value: "1000"
+        - name: USER_GID
+          value: "1000"
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      livenessProbe:
+        httpGet:
+          path: /api/healthz
+          port: 3000
+          scheme: HTTP
+        initialDelaySeconds: 90
+        periodSeconds: 30
+        timeoutSeconds: 5
+        failureThreshold: 3
+  volumes:
+    - name: forgejo-data
+      persistentVolumeClaim:
+        claimName: forgejo-data
