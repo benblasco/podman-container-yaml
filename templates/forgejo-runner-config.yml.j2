@@ -16,11 +16,19 @@ runner:
   shutdown_timeout: 3h
   labels:
 {% for label in forgejo_runner_labels %}
-    - {{ label }}
+    - {{ label | tojson }}
 {% endfor %}
 
 cache:
   enabled: true
 
+# Job containers (Buildah/aio), not the forgejo-runner pod — see run-podman-quadlet-forgejo.yml.
 container:
-  privileged: false
+  force_pull: {{ forgejo_runner_container_force_pull | default(false) | ternary('true', 'false') }}
+  privileged: {{ forgejo_runner_container_privileged | default(false) | ternary('true', 'false') }}
+{% if forgejo_runner_container_network is defined and forgejo_runner_container_network | length > 0 %}
+  network: {{ forgejo_runner_container_network | tojson }}
+{% endif %}
+{% if forgejo_runner_container_options is defined and forgejo_runner_container_options | trim | length > 0 %}
+  options: {{ forgejo_runner_container_options | trim | replace('\n', ' ') | tojson }}
+{% endif %}

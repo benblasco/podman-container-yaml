@@ -23,8 +23,15 @@
   vars:
     podman_run_as_user: bblasco
     podman_run_as_group: bblasco
+    # Label name must match workflow runs-on (fedora-server-bootc). Image is official Podman+Buildah+Skopeo CI image.
     forgejo_runner_labels:
-      - docker:docker://node:lts
+      - "fedora-server-bootc:docker://quay.io/containers/aio:v2026.10.05"
+    # Job containers need Buildah/fuse and homelab registry config (see templates/forgejo-runner-config.yml.j2).
+    forgejo_runner_container_privileged: true
+    forgejo_runner_container_network: podman
+    # label/seccomp: nested builds on SELinux hosts; fuse: buildah; registries.conf.d: micro.lan/nuc.lan insecure push.
+    # Single line: colons in fuse:rw and mount paths must be quoted in generated config.yml (template uses tojson).
+    forgejo_runner_container_options: "--security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v /etc/containers/registries.conf.d:/etc/containers/registries.conf.d:ro"
     podman_quadlet_specs:
       - template_src: pod/pod-forgejo-runner.yml.j2
       - file_src: kube/forgejo-runner.kube

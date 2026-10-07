@@ -4,6 +4,10 @@
 # <inventory_hostname_short>-runner (e.g. opti-runner on opti.lan).
 forgejo_runner_uuid: REPLACE_WITH_UUID
 forgejo_runner_token: REPLACE_WITH_TOKEN
+# Match fedora-server-bootc/.forgejo/workflows/container-build.yml runs-on and aio job image (pin tag when upgrading).
 forgejo_runner_labels:
-  - docker:docker://node:lts
+  - "fedora-server-bootc:docker://quay.io/containers/aio:v2026.10.05"
+forgejo_runner_container_privileged: true
+forgejo_runner_container_network: podman
+forgejo_runner_container_options: "--security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v /etc/containers/registries.conf.d:/etc/containers/registries.conf.d:ro"
 podman_socket_uid: 1000
