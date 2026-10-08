@@ -9,8 +9,11 @@ OnFailure=signal-failure-notify@%n.service
 
 [Kube]
 Yaml=pod-forgejo-runner.yml
+{% if podman_run_as_user != 'root' %}
 UserNS=keep-id
+# Pasta for host/DNS reachability; not supported rootful (see files/kube/forgejo.kube).
 Network=pasta:-a,10.0.3.0,-n,24,-g,10.0.3.2,--dns-forward,10.0.3.3
+{% endif %}
 
 [Service]
 Restart=on-failure

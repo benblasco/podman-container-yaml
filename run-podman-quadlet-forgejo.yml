@@ -34,7 +34,7 @@
     forgejo_runner_container_options: "--security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v /etc/containers/registries.conf.d:/etc/containers/registries.conf.d:ro"
     podman_quadlet_specs:
       - template_src: pod/pod-forgejo-runner.yml.j2
-      - file_src: kube/forgejo-runner.kube
+      - template_src: kube/forgejo-runner.kube.j2
         state: started
   # Forgejo Runner starts workflow *job* containers via a container API (Docker-compatible).
   # Rootless Podman exposes that API on the user podman.socket unit; without it the runner

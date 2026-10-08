@@ -2,13 +2,6 @@ log:
   level: info
   job_level: info
 
-server:
-  connections:
-    forgejo:
-      url: {{ forgejo_instance_url }}
-      uuid: {{ forgejo_runner_uuid }}
-      token: {{ forgejo_runner_token }}
-
 runner:
   file: .runner
   capacity: 1

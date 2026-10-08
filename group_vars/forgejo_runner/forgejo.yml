@@ -1,2 +1,4 @@
 ---
+# Shared by all hosts in [forgejo_runner] (see hosts). Per-host runner secrets and
+# podman_run_as_user/group live in host_vars/<host>/forgejo-runner.yml.
 forgejo_instance_url: http://opti.lan:3000/
