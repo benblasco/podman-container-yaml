@@ -1,13 +1,19 @@
 ---
-# Copy to forgejo-runner.yml (gitignored). One file per runner host.
+# Copy to forgejo-runner.yml (gitignored). One file per runner host in [forgejo_runner].
 # Forgejo UI → Site administration → Actions → Runners → create runner named
 # <inventory_hostname_short>-runner (e.g. opti-runner on opti.lan).
 forgejo_runner_uuid: REPLACE_WITH_UUID
 forgejo_runner_token: REPLACE_WITH_TOKEN
+# Quadlet owner and Podman API for workflow job containers (required).
+# root + root: system quadlet, /run/podman/podman.sock (rootful).
+# bblasco + bblasco: user quadlet, /run/user/<uid>/podman/podman.sock (rootless).
+podman_run_as_user: root
+podman_run_as_group: root
+# Rootless only — set when podman_run_as_user is not root:
+# podman_socket_uid: 1000
 # Match fedora-server-bootc/.forgejo/workflows/container-build.yml runs-on and aio job image (pin tag when upgrading).
 forgejo_runner_labels:
   - "fedora-server-bootc:docker://quay.io/containers/aio:v2026.10.05"
 forgejo_runner_container_privileged: true
 forgejo_runner_container_network: podman
 forgejo_runner_container_options: "--security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v /etc/containers/registries.conf.d:/etc/containers/registries.conf.d:ro"
-podman_socket_uid: 1000
