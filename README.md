@@ -109,6 +109,7 @@ You can also check what the currently running health check is via:
 - [Tailscale container authentication key](README.tailscale.md)
 - [Rsyslog server — Red Hat registry credentials](README.rsyslog-server.md)
 - [Signal CLI REST API](README.signal-api.md) (includes [failure notifications](README.signal-api.md#service-failure-notifications) via `enable-service-failure-notifications.yml`)
+- [Uptime Kuma](README.uptime-kuma.md)
 - [Forgejo and Actions runners](README.forgejo.md)
 - [Jenkins backups](README.jenkins.md)
 - [Docker registry certificates and garbage collection](README.docker-registry.md)
