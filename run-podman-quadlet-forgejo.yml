@@ -26,6 +26,7 @@
     # Label name must match workflow runs-on (fedora-server-bootc). Image is official Podman+Buildah+Skopeo CI image.
     forgejo_runner_labels:
       - "fedora-server-bootc:docker://quay.io/containers/aio:v2026.10.05"
+      - "pqc-ssh-server:docker://quay.io/containers/aio:v2026.10.05"
     # Job containers need Buildah/fuse and homelab registry config (see templates/forgejo-runner-config.yml.j2).
     forgejo_runner_container_privileged: true
     forgejo_runner_container_network: podman
