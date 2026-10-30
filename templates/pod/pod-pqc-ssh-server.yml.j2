@@ -1,0 +1,83 @@
+# Rendered from pqc_ssh_authorized_keys_file (see run-podman-quadlet-pqc-ssh-server.yml).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pqc-ssh-server
+  labels:
+    io.containers.autoupdate: "registry"
+spec:
+  initContainers:
+    - name: prepare-hostkeys
+      image: micro.lan:5000/pqc-ssh-server:latest
+      securityContext:
+        runAsUser: 0
+      command:
+        - sh
+        - -ec
+        - |
+          KEY_DIR=/var/lib/sshd
+          KEY="${KEY_DIR}/ssh_host_ed25519_key"
+          mkdir -p "${KEY_DIR}"
+          chown 0:0 "${KEY_DIR}" 2>/dev/null || true
+          chmod 700 "${KEY_DIR}" 2>/dev/null || true
+          if [ ! -f "${KEY}" ]; then
+            ssh-keygen -t ed25519 -f "${KEY}" -N ""
+          fi
+          chmod 600 "${KEY}" "${KEY}.pub" 2>/dev/null || true
+      volumeMounts:
+        - mountPath: /var/lib/sshd
+          name: pqc-ssh-hostkeys
+    - name: seed-authorized-keys
+      image: micro.lan:5000/pqc-ssh-server:latest
+      # Must run as root to chown; do not inherit a non-root USER from the image.
+      securityContext:
+        runAsUser: 0
+      command:
+        - sh
+        - -c
+        - |
+          set -eu
+          mkdir -p /home/sshuser/.ssh
+          printf '%s' "$PQC_SSH_AUTHORIZED_KEYS" > /home/sshuser/.ssh/authorized_keys
+          chown {{ pqc_ssh_uid }}:{{ pqc_ssh_gid }} /home/sshuser/.ssh /home/sshuser/.ssh/authorized_keys
+          chmod 700 /home/sshuser/.ssh
+          chmod 600 /home/sshuser/.ssh/authorized_keys
+      env:
+        - name: PQC_SSH_AUTHORIZED_KEYS
+          value: |
+{{ pqc_ssh_authorized_keys | indent(12, first=True) }}
+      volumeMounts:
+        - mountPath: /home/sshuser/.ssh
+          name: pqc-ssh-authorized-keys
+  containers:
+    - name: pqc-ssh-server
+      image: micro.lan:5000/pqc-ssh-server:latest
+      securityContext:
+        runAsUser: 0
+      ports:
+        - containerPort: 22
+          hostPort: 22222
+      volumeMounts:
+        - mountPath: /var/lib/sshd
+          name: pqc-ssh-hostkeys
+        # Same PVC as init container; omit readOnly here — Podman kube play can
+        # mount the volume read-only for the whole pod when any container sets it.
+        - mountPath: /home/sshuser/.ssh
+          name: pqc-ssh-authorized-keys
+      env:
+        - name: TZ
+          value: Australia/Melbourne
+      livenessProbe:
+        tcpSocket:
+          port: 22
+        initialDelaySeconds: 15
+        periodSeconds: 30
+        timeoutSeconds: 5
+        failureThreshold: 3
+  volumes:
+    - name: pqc-ssh-hostkeys
+      persistentVolumeClaim:
+        claimName: pqc-ssh-hostkeys
+    - name: pqc-ssh-authorized-keys
+      persistentVolumeClaim:
+        claimName: pqc-ssh-authorized-keys

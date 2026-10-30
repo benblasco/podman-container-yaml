@@ -1,0 +1,24 @@
+[Unit]
+Description=Post-quantum capable SSH server container run by Podman
+Before=local-fs.target
+After=network-online.target
+# Boot stagger: Tier 1
+RandomizedDelaySec=45s
+# Limit restart attempts to avoid cyclic restarts
+StartLimitBurst=5
+StartLimitIntervalSec=300
+# Call the service to send a notification to the user via Signal on failure
+OnFailure=signal-failure-notify@%n.service
+
+[Kube]
+Yaml=pod-pqc-ssh-server.yml
+
+[Service]
+# Recover from sd_notify race condition during boot storm
+Restart=on-failure
+RestartSec=15
+TimeoutStartSec=180
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target

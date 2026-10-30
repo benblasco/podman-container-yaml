@@ -1,0 +1,37 @@
+---
+- name: Run the podman system role for pqc-ssh-server
+  hosts: nuc.lan
+  become: true
+  vars:
+    podman_run_as_user: bblasco
+    podman_run_as_group: bblasco
+    pqc_ssh_authorized_keys: "{{ lookup('ansible.builtin.file', pqc_ssh_authorized_keys_file) }}"
+    podman_firewall:
+      - port: 22222/tcp
+        state: enabled
+    podman_quadlet_specs:
+      # The yml files need to be defined before
+      # the kube file that references them.
+      # The other directives need to be under
+      # the kube file_src else this does not work!
+      - template_src: pod/pod-pqc-ssh-server.yml.j2
+      - file_src: kube/pqc-ssh-server.kube
+        state: started
+  pre_tasks:
+    - name: Look up bblasco uid/gid for authorized_keys ownership in the container
+      ansible.builtin.getent:
+        database: passwd
+        key: "{{ podman_run_as_user }}"
+    - name: Set pqc_ssh_uid/gid from getent unless overridden in host_vars
+      ansible.builtin.set_fact:
+        pqc_ssh_uid: "{{ pqc_ssh_uid | default(getent_passwd[podman_run_as_user][1] | int) }}"
+        pqc_ssh_gid: "{{ pqc_ssh_gid | default(getent_passwd[podman_run_as_user][2] | int) }}"
+  roles:
+    - fedora.linux_system_roles.podman
+  post_tasks:
+    - name: Restart pqc-ssh-server service to apply updated authorized keys
+      become_user: bblasco
+      ansible.builtin.systemd:
+        name: pqc-ssh-server.service
+        state: restarted
+        scope: user

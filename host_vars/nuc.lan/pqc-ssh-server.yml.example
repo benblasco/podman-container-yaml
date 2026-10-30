@@ -1,0 +1,6 @@
+# Copy to host_vars/nuc.lan/pqc-ssh-server.yml (gitignored).
+# Path on the Ansible control machine (this repo checkout or absolute path).
+pqc_ssh_authorized_keys_file: "{{ playbook_dir }}/files/pqc-ssh-server/nuc.lan-authorized_keys"
+# Optional if the registry image was built with non-default SSH_UID/SSH_GID:
+# pqc_ssh_uid: 1000
+# pqc_ssh_gid: 1000

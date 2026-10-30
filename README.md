@@ -53,7 +53,7 @@ Tier **1** is highest priority (starts earliest); tier **4** is lowest (starts l
 
 | Tier | Typical delay | Services |
 |------|---------------|----------|
-| 1 | 30–60s | Pi-hole, Tailscale, Signal API, Uptime Kuma, Home Assistant, UniFi |
+| 1 | 30–60s | Pi-hole, Tailscale, Signal API, Uptime Kuma, Home Assistant, UniFi, pqc-ssh-server |
 | 2 | 90s | Docker Registry, Docker Registry UI, Forgejo, Forgejo runner, Jenkins, Homepage, iSponsorBlockTV |
 | 3 | 120–150s | Transmission, ESPHome, Arrsuite |
 | 4 | 240s | BentoPDF, Boot server, NetAlertX, Rsyslog-server, HashiCorp Vault |
@@ -66,6 +66,7 @@ Tier **1** is highest priority (starts earliest); tier **4** is lowest (starts l
 | 1 | Tailscale | 30s | 180s |
 | 1 | Signal API | 45s | 180s |
 | 1 | Uptime Kuma | 45s | 180s |
+| 1 | pqc-ssh-server | 45s | 180s |
 | 1 | Home Assistant | 60s | 300s |
 | 1 | UniFi | 60s | 600s |
 | 2 | Docker Registry | 90s | 180s |
@@ -110,6 +111,7 @@ You can also check what the currently running health check is via:
 - [Rsyslog server — Red Hat registry credentials](README.rsyslog-server.md)
 - [Signal CLI REST API](README.signal-api.md) (includes [failure notifications](README.signal-api.md#service-failure-notifications) via `enable-service-failure-notifications.yml`)
 - [Uptime Kuma](README.uptime-kuma.md)
+- [pqc-ssh-server (nuc.lan)](README.pqc-ssh-server.md)
 - [Forgejo and Actions runners](README.forgejo.md)
 - [Jenkins backups](README.jenkins.md)
 - [Docker registry certificates and garbage collection](README.docker-registry.md)

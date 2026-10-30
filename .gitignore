@@ -4,4 +4,6 @@ host_vars/*/homeassistant.yml
 group_vars/*/tailscale.yml
 group_vars/all/signal-notify.yml
 host_vars/*/forgejo-runner.yml
+host_vars/*/pqc-ssh-server.yml
+files/pqc-ssh-server/*-authorized_keys
 backups/

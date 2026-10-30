@@ -1,0 +1,2 @@
+# Copy to nuc.lan-authorized_keys (gitignored). One OpenSSH public key per line.
+# ssh-ed25519 AAAA... you@host
