@@ -9,9 +9,22 @@ Kube quadlets on lab hosts. Deploy with [`run-podman-quadlet-forgejo.yml`](run-p
 
 Server today: **opti.lan** (`codeberg.org/forgejo/forgejo:15-rootless`, ports **3000** / **2222**, volume `forgejo-data`). Runners use `data.forgejo.org/forgejo/runner:13`. **Rootless** runner kube quads use pasta networking (see `forgejo.kube`); **rootful** omits pasta (Podman default pod network).
 
+## Ansible variables
+
+| Scope | File | Contents |
+|-------|------|----------|
+| All runners | [`group_vars/forgejo_runner/forgejo.yml`](group_vars/forgejo_runner/forgejo.yml) | `forgejo_instance_url` |
+| Each runner host | `host_vars/<host>/forgejo-runner.yml` (see [example](host_vars/opti.lan/forgejo-runner.yml.example)) | `forgejo_runner_uuid`, `forgejo_runner_token`, `podman_run_as_user` / `podman_run_as_group`, **`forgejo_runner_labels`**, `forgejo_runner_container_*` |
+
+The runner play in [`run-podman-quadlet-forgejo.yml`](run-podman-quadlet-forgejo.yml) only lists quadlet specs; it does **not** set labels, job-container options, or `podman_run_as_*`. The Forgejo **server** play still pins `bblasco` for the app only.
+
+### Per-host runner labels
+
+`forgejo_runner_labels` is the **only** place to define which workflows a host runs. Each entry is `"<runs-on>:docker://<job-image>"`. Forgejo schedules a job on a runner only if that runner advertises a matching label name (the part before `:`). **opti.lan** today registers both `fedora-server-bootc` and `pqc-ssh-server`; another host in `[forgejo_runner]` can register a subset (for example only `fedora-server-bootc`) so different repos or workflows land on different machines.
+
 ## Rootless vs rootful runner
 
-Each runner host **must** define `podman_run_as_user` and `podman_run_as_group` in `host_vars/<host>/forgejo-runner.yml` (see [example](host_vars/opti.lan/forgejo-runner.yml.example)). The runner play does not set those variables (the server play still pins `bblasco` for Forgejo app only). Shared URL for all runners: `forgejo_instance_url` in [`group_vars/forgejo_runner/forgejo.yml`](group_vars/forgejo_runner/forgejo.yml) (inventory group `[forgejo_runner]` in [`hosts`](hosts)—underscore, not `forgejo-runner`).
+Each runner host **must** define `podman_run_as_user` and `podman_run_as_group` in `host_vars/<host>/forgejo-runner.yml`. Inventory group `[forgejo_runner]` is in [`hosts`](hosts) (underscore, not `forgejo-runner`).
 
 | `podman_run_as_user` | Quadlet scope | Job-container Podman API |
 |----------------------|---------------|---------------------------|
@@ -24,16 +37,19 @@ Switching a host between rootless and rootful uses a **new** Podman storage grap
 
 **Podman API socket:** The runner process only schedules work; each workflow job runs in a separate container. Forgejo Runner uses the Docker-compatible API (`DOCKER_HOST`) to create those containers. Without the matching socket, jobs fail at startup. See [Runner installation — container environment](https://forgejo.org/docs/latest/admin/actions/runner-installation/#setting-up-the-container-environment) and [Utilizing Docker within Actions](https://forgejo.org/docs/latest/admin/actions/docker-access/).
 
+- **Rootless** (`podman_run_as_user` not `root`): the playbook enables the **user** `podman.socket` unit before deploy.
+- **Rootful** (`root`): the playbook enables the **system** `podman.socket` unit (`/run/podman/podman.sock`).
+
 Pod name on each runner host: **`{{ inventory_hostname_short }}-runner`** (e.g. `opti-runner`). Central Forgejo URL for all runners: `forgejo_instance_url` in group vars.
 
 ## Registration
 
 1. Complete Forgejo install at `http://opti.lan:3000` if needed.
 2. **Site administration → Actions → Runners** → create a runner named like `opti-runner` for that host.
-3. Copy [example](host_vars/opti.lan/forgejo-runner.yml.example) to `host_vars/<host>/forgejo-runner.yml`. Set **uuid**, **token**, and **podman_run_as_user** / **podman_run_as_group**. Add the host to `[forgejo_runner]` in [`hosts`](hosts). Do not use `forgejo-runner register` with that token—it is not the one-shot registration token; the playbook writes `/data/.runner` (registration) and `/data/config.yml` (labels, container options) on each deploy.
+3. Copy [example](host_vars/opti.lan/forgejo-runner.yml.example) to `host_vars/<host>/forgejo-runner.yml`. Set **uuid**, **token**, **podman_run_as_user** / **podman_run_as_group**, and **`forgejo_runner_labels`** (and `forgejo_runner_container_*` for aio/Buildah jobs). Add the host to `[forgejo_runner]` in [`hosts`](hosts). Do not use `forgejo-runner register` with that token—it is not the one-shot registration token; the playbook writes `/data/.runner` (registration) and `/data/config.yml` (labels, container options) on each deploy.
 4. `ansible-playbook run-podman-quadlet-forgejo.yml --ask-become-pass`
 
-Workflows for [fedora-server-bootc](https://github.com/benblasco/fedora-server-bootc): `runs-on: fedora-server-bootc` (`quay.io/containers/aio` job image; see comments in `run-podman-quadlet-forgejo.yml`). Host `/etc/containers/registries.conf.d` must allow `micro.lan:5000` and `nuc.lan:5000` as insecure.
+Workflow `runs-on` values must appear in that host’s `forgejo_runner_labels` (for example [fedora-server-bootc](https://github.com/benblasco/fedora-server-bootc) uses `runs-on: fedora-server-bootc` with the aio image in the example file). Host `/etc/containers/registries.conf.d` must allow `micro.lan:5000` and `nuc.lan:5000` as insecure.
 
 After changing runner labels or `container:` options, re-run the playbook and restart the runner unit:
 

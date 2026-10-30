@@ -21,28 +21,34 @@
   hosts: forgejo_runner
   become: true
   vars:
-    podman_run_as_user: bblasco
-    podman_run_as_group: bblasco
-    # Label name must match workflow runs-on (fedora-server-bootc). Image is official Podman+Buildah+Skopeo CI image.
-    forgejo_runner_labels:
-      - "fedora-server-bootc:docker://quay.io/containers/aio:v2026.10.05"
-      - "pqc-ssh-server:docker://quay.io/containers/aio:v2026.10.05"
-    # Job containers need Buildah/fuse and homelab registry config (see templates/forgejo-runner-config.yml.j2).
-    forgejo_runner_container_privileged: true
-    forgejo_runner_container_network: podman
-    # label/seccomp: nested builds on SELinux hosts; fuse: buildah; registries.conf.d: micro.lan/nuc.lan insecure push.
-    # Single line: colons in fuse:rw and mount paths must be quoted in generated config.yml (template uses tojson).
-    forgejo_runner_container_options: "--security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v /etc/containers/registries.conf.d:/etc/containers/registries.conf.d:ro"
     podman_quadlet_specs:
       - template_src: pod/pod-forgejo-runner.yml.j2
       - template_src: kube/forgejo-runner.kube.j2
         state: started
-  # Forgejo Runner starts workflow *job* containers via a container API (Docker-compatible).
-  # Rootless Podman exposes that API on the user podman.socket unit; without it the runner
-  # fails with "cannot connect to docker daemon". See:
-  # https://forgejo.org/docs/latest/admin/actions/runner-installation/#setting-up-the-container-environment
+  # Runner labels, container job options, and podman_run_as_* live in
+  # host_vars/<host>/forgejo-runner.yml (see README.forgejo.md).
   pre_tasks:
+    - name: Require per-host forgejo-runner.yml variables
+      ansible.builtin.assert:
+        that:
+          - forgejo_runner_uuid is defined
+          - forgejo_runner_token is defined
+          - forgejo_runner_labels is defined
+          - forgejo_runner_labels | length > 0
+          - podman_run_as_user is defined
+          - podman_run_as_group is defined
+        fail_msg: >-
+          Copy host_vars/opti.lan/forgejo-runner.yml.example to
+          host_vars/{{ inventory_hostname }}/forgejo-runner.yml and set uuid, token,
+          labels, and podman_run_as_user/group.
+    - name: Enable system podman API socket for Actions job containers (rootful)
+      when: podman_run_as_user == 'root'
+      ansible.builtin.systemd:
+        name: podman.socket
+        enabled: true
+        state: started
     - name: Enable rootless podman API socket for Actions job containers
+      when: podman_run_as_user != 'root'
       become: true
       become_user: "{{ podman_run_as_user }}"
       environment:

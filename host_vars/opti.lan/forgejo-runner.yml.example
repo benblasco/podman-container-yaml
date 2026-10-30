@@ -11,9 +11,13 @@ podman_run_as_user: root
 podman_run_as_group: root
 # Rootless only — set when podman_run_as_user is not root:
 # podman_socket_uid: 1000
-# Match fedora-server-bootc/.forgejo/workflows/container-build.yml runs-on and aio job image (pin tag when upgrading).
+# Only labels listed here are offered to Forgejo for this host. Each name must match
+# workflow runs-on: "<name>:docker://<job-image>" (see Forgejo runner docs).
+# Use different label sets on different hosts to route workflows to specific runners.
 forgejo_runner_labels:
   - "fedora-server-bootc:docker://quay.io/containers/aio:v2026.10.05"
+  - "pqc-ssh-server:docker://quay.io/containers/aio:v2026.10.05"
+# Job containers (Buildah/aio), not the forgejo-runner pod — pin aio tag when upgrading.
 forgejo_runner_container_privileged: true
 forgejo_runner_container_network: podman
 forgejo_runner_container_options: "--security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v /etc/containers/registries.conf.d:/etc/containers/registries.conf.d:ro"
