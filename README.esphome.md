@@ -52,7 +52,7 @@ esphome-esphome --format '{{range .Mounts}}{{.Name}} -> {{.Destination}}{{printl
 
 On micro.lan the persistent volume data lives at:
 
-```
+```text
 /var/mnt/containers/bblasco/storage/volumes/esphome-config/_data
 ```
 

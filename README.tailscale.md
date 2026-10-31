@@ -12,7 +12,7 @@ Example key: `tskey-auth-kf5TBXe2mA21CNTRL-8T6xic8qhBAzfJycEKEBAAiZH9Zp4oSRE`
 
 Then take that auth key and put it in the container pod definition
 
-```
+```yaml
       env:
         - name: TS_AUTHKEY
           value: tskey-auth-kFwx5M8WTB21CNTRL-SDH44CBqKiizNLK3W7R2jizV4vUZ6BL1

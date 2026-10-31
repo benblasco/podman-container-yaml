@@ -2,7 +2,7 @@
 
 The Signal API runs on `micro.lan:9922`. After deploying, link your Signal number by visiting:
 
-```
+```text
 http://micro.lan:9922/v1/qrcodelink?device_name=signal-api
 ```
 
@@ -65,12 +65,14 @@ Please see Git issue [listGroups not showing new groups
 #1602](https://github.com/AsamK/signal-cli/issues/1602)
 
 Synchronise the container as follows:
-```
+
+```bash
 podman exec -it signal-api-signal-api /bin/bash
 signal-cli --config /home/.local/share/signal-cli sendSyncRequest
 ```
 
 Then grab the list of groups to fetch the Group ID with the following command:
-```
+
+```bash
 curl -X GET -H "Content-Type: application/json" 'http://<Signal API container host>:9922/v1/groups/<your phone number>' | jq
 ```

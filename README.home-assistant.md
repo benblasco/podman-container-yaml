@@ -100,7 +100,8 @@ https://homeassistant-ai.github.io/ha-mcp/faq/
 ## Home Assistant MCP server client configuration
 
 For cursor, you need the following client configuration:
-```
+
+```json
 {
   "mcpServers": {
     "home-assistant": {
@@ -128,7 +129,9 @@ https://github.com/containers/podman/issues/16741
     1. You see something like this in `/var/log/audit/audit.log` (AVC denied `send_msg` for bluetooth/dbus; excerpt
        shortened):
     2. Check what the issue is:
-```[root@opti ~]# grep tooth /var/log/audit/audit.log | tail -1 | audit2why
+
+```bash
+[root@opti ~]# grep tooth /var/log/audit/audit.log | tail -1 | audit2why
 type=USER_AVC msg=audit(1683117372.225:2274): pid=817 uid=81 auid=4294967295 ses=4294967295 subj=system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 msg='avc:  denied  { send_msg } for  scontext=system_u:system_r:bluetooth_t:s0 tcontext=unconfined_u:system_r:spc_t:s0 tclass=dbus permissive=0 exe="/usr/bin/dbus-broker" sauid=81 hostname=? addr=? terminal=?'UID="dbus" AUID="unset" SAUID="dbus"
 
         Was caused by:
@@ -138,7 +141,8 @@ type=USER_AVC msg=audit(1683117372.225:2274): pid=817 uid=81 auid=4294967295 ses
 ```
 
     3. Generate the module:
-```
+
+```bash
 [root@opti ~]# grep tooth /var/log/audit/audit.log | tail -1 | audit2allow -a -M bluetooth_homeassistant
 ******************** IMPORTANT ***********************
 To make this policy package active, execute:

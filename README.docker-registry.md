@@ -18,19 +18,22 @@ https://access.redhat.com/solutions/6973542
 ## TL;DR... just give me the commands:
 
 Generate a key (requires passphrase:
-```
+
+```bash
 openssl genrsa -des3 -out self-ssl.key 2048
 ```
 
 Generate the Certificate Signing Request (CSR)
 Use the same passphrase as above when prompted, and fill out the details requested.
 Note: Do not set a challenge password.
-```
+
+```bash
 openssl req -new -key self-ssl.key -out self-ssl.csr
 ```
 
 Create the OpenSSL X509v3 extensions file with Subject Alternative Names:
-```
+
+```bash
 cat <<EOF > myserver.cnf
 authorityKeyIdentifier=keyid,issuer
 keyUsage=digitalSignature
@@ -45,12 +48,14 @@ EOF
 
 Generate the certificate using the CSR, the extension file and the key
 Enter the same passphrase as above when prompted.
-```
+
+```bash
 openssl x509 -req -days 365 -in self-ssl.csr -extfile myserver.cnf -signkey self-ssl.key -out self-ssl.crt
 ```
 
 Decrypt the private key
-```
+
+```bash
 openssl rsa -in self-ssl.key -out self-ssl-unencrypted.key
 ```
 
