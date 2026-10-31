@@ -66,5 +66,5 @@ signal-cli --config /home/.local/share/signal-cli sendSyncRequest
 
 Then grab the list of groups to fetch the Group ID with the following command:
 ```
-curl -X GET -H "Content-Type: application/json" 'http://<Signal API container host>:9922/v1/groups/<your phone number>' | jq 
+curl -X GET -H "Content-Type: application/json" 'http://<Signal API container host>:9922/v1/groups/<your phone number>' | jq
 ```

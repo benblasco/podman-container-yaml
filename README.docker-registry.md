@@ -135,4 +135,3 @@ To run the cleanup manually without waiting for the timer:
 systemctl --user start docker-registry-cleaner.service
 journalctl --user -u docker-registry-cleaner.service -f
 ```
-

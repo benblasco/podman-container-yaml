@@ -1,0 +1,10 @@
+---
+# Light touch on homelab docs; tighten individual rules over time if desired.
+config:
+  default: false
+
+globs:
+  - "**/*.md"
+
+ignores:
+  - archive/**

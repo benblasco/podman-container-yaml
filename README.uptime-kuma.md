@@ -5,8 +5,8 @@ Uptime Kuma supports signal notifications natively.
 Navigate to settings -> Notifications -> Setup notification, and then set:
 Notification Type: Signal
 Post URL: http://:/v2/send
-Number: 
-Recipients:  or 
+Number:
+Recipients:  or
 Default enabled: On
 Apply on all existing monitors: On (optionally)
 
@@ -28,8 +28,3 @@ Kuma does not have a native supported backup/restore capability. The only way to
 Github Issue: (Add import/export backup/restore for settings)[https://github.com/louislam/uptime-kuma/issues/6045]
 
 Reddit discussion: (Database Backup & Disaster Recovery)[https://www.reddit.com/r/UptimeKuma/comments/10znk0j/database_backup_disaster_recovery/]
-
-
-
-
-

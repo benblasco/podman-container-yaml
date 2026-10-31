@@ -1,0 +1,5 @@
+# Dev tooling only — pip install --user -r requirements-dev.txt (no dnf).
+# Hook binaries (gitleaks, kubeconform wrapper, shellcheck-py, etc.) install via pre-commit cache.
+pre-commit>=4.0.0
+ansible-lint>=24.10.0
+yamllint>=1.35.0

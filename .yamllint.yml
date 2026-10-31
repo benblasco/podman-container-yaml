@@ -1,0 +1,17 @@
+---
+extends: default
+
+ignore: |
+  archive/
+  **/*.j2
+
+rules:
+  document-start: disable
+  line-length: disable
+  comments: disable
+  comments-indentation: disable
+  braces:
+    max-spaces-inside: 1
+  truthy:
+    allowed-values: ['true', 'false', 'on']
+    check-keys: false

@@ -13,7 +13,7 @@ Optimizing Wi-Fi handoff (roaming) between UniFi Access Points (APs) relies on c
 1. Enable Roaming Standards: Go to Settings > WiFi and select your wireless network. Ensure Advanced is set to Manual.
 	- Enable BSS Transition (802.11v): This allows APs to send nearby AP signal information to your clients, allowing for smarter roaming decisions.
 	- Enable Fast Roaming (802.11r): Speeds up the authentication handshake when moving between APs. (Note: If you have legacy smart home/IoT devices, keep this disabled as it may cause them connectivity issues).
-  
+
 # Band steering to prefer 5GHz over 2.4 GHz
 
 This feature encourages compatible devices to prefer the 5 GHz band over the 2.4 GHz band. \[[1](https://help.ui.com/hc/en-us/articles/32065480092951-UniFi-WiFi-SSID-and-AP-Settings-Overview)\]

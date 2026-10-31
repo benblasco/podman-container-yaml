@@ -1,0 +1,17 @@
+---
+profile: moderate
+exclude_paths:
+  - archive/
+  - .cache/
+  - .git/
+
+write_list:
+  - none
+
+skip_list:
+  - yaml
+  - partial-become
+  - var-naming
+
+warn_list:
+  - experimental

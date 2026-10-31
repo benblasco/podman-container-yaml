@@ -1,0 +1,66 @@
+# See README.md (Development). archive/ is excluded from every hook.
+---
+exclude: ^archive/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^archive/
+      - id: end-of-file-fixer
+        exclude: ^archive/
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: ^archive/|\.j2$
+      - id: check-merge-conflict
+        exclude: ^archive/
+      - id: check-added-large-files
+        args: [--maxkb=500]
+        exclude: ^archive/
+      - id: detect-private-key
+        exclude: ^archive/
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        files: \.(yml|yaml)$
+        exclude: ^archive/|\.j2$
+
+  - repo: local
+    hooks:
+      - id: ansible-lint
+        name: ansible-lint
+        entry: ansible-lint
+        language: system
+        pass_filenames: false
+        always_run: true
+        exclude: ^archive/
+
+  - repo: local
+    hooks:
+      - id: kubeconform
+        name: kubeconform (files/pod)
+        entry: .pre-commit/run-kubeconform.sh
+        language: script
+        files: ^files/pod/.*\.yml$
+        exclude: ^archive/
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
+        exclude: ^archive/
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        exclude: ^archive/
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.17.2
+    hooks:
+      - id: markdownlint-cli2
+        exclude: ^archive/

@@ -1,0 +1,8 @@
+title = "podman-container-yaml"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Retired playbooks and specs"
+paths = ['''(?i)^archive/''']

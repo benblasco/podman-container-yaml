@@ -8,6 +8,21 @@ The system role is documented here: https://github.com/linux-system-roles/podman
 
 Follow the instructions in requirements.yml to install the relevant Ansible pre-requisites.
 
+# Development
+
+Git commits run [pre-commit](https://pre-commit.com/) hooks (YAML, Ansible, kubeconform on `files/pod/`, gitleaks, shellcheck, markdown). **No `dnf install`** — tools use `pip install --user` and pre-commit’s cache under `~/.cache/pre-commit/`. The [`archive/`](archive/) tree is excluded from every hook.
+
+```bash
+python3 -m pip install --user -r requirements-dev.txt
+export PATH="$HOME/.local/bin:$PATH"   # add to shell profile if needed
+pre-commit install
+pre-commit run --all-files             # first-time / CI-style check
+```
+
+Verify: `pre-commit --version`, `command -v pre-commit`, `ansible-lint --version`.
+
+On first run, kubeconform is downloaded to `~/.cache/pre-commit-tools/` by [`.pre-commit/run-kubeconform.sh`](.pre-commit/run-kubeconform.sh). Ansible-lint uses the `ansible-lint` from your user `pip` install (`language: system` hook).
+
 # Use
 
 Kubernetes spec files are defined with names like `pod-<container name>.yml`
@@ -95,7 +110,7 @@ systemctl --user show pihole.service -p RandomizedDelaySec,TimeoutStartSec,Start
 
 # Pod/container healthchecks
 
-All the containers running here have liveness probes configured. You can check the health of the container with a command like: 
+All the containers running here have liveness probes configured. You can check the health of the container with a command like:
 
 `watch -n 5 "podman inspect <container name> --format='{{json .State.Health}}'"`
 
