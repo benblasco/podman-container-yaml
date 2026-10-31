@@ -16,7 +16,8 @@ Applied via `ha_config_set_dashboard` `python_transform` on `dashboard-ac`, view
 
 **config_hash after final change:** `feebc1529eada652` (Aug 2026)
 
-Native `button` cards ignore `grid_options.rows` for height in many cases; combining `columns: 3`, `rows: auto`, and hiding labels produced a layout the user accepted.
+Native `button` cards ignore `grid_options.rows` for height in many cases; combining `columns: 3`, `rows: auto`, and
+hiding labels produced a layout the user accepted.
 
 ## Revert
 
@@ -94,4 +95,5 @@ for section in config['views'][0]['sections']:
 
 ## Options not taken
 
-Setting `grid_options.rows: 1` alone did not visibly shrink buttons. Switching card type to `tile` or `custom:button-card` was not pursued after the icon-only layout was accepted.
+Setting `grid_options.rows: 1` alone did not visibly shrink buttons. Switching card type to `tile` or `custom:button-
+card` was not pursued after the icon-only layout was accepted.

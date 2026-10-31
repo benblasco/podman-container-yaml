@@ -4,9 +4,9 @@ metadata:
   name: boot-server
   labels:
     io.containers.autoupdate: "registry"
-  #annotations:
+  # annotations:
     # https://www.redhat.com/en/blog/debug-rootless-podman-mounted-volumes
-    #run.oci.keep_original_groups: 1
+    # run.oci.keep_original_groups: 1
 spec:
   containers:
     - name: boot-server
@@ -40,7 +40,7 @@ spec:
 
   volumes:
     - name: boot-server-content
-      #volumeMode: Filesystem
+      # volumeMode: Filesystem
       hostPath:
         path: /var/home/bblasco/boot-server
         type: Directory

@@ -1,10 +1,12 @@
 ---
-- name: Validate required role variable user
+- name: Validate required role variable signal_failure_notify_user
   ansible.builtin.assert:
     that:
-      - user is defined
-      - user in ['root', 'bblasco', 'media']
-    fail_msg: "signal_failure_notify role requires user (root, bblasco, or media)"
+      - signal_failure_notify_user is defined
+      - signal_failure_notify_user in ['root', 'bblasco', 'media']
+    fail_msg: >-
+      signal_failure_notify role requires signal_failure_notify_user
+      (root, bblasco, or media)
 
 - name: Ensure /var/usrlocal/bin exists
   ansible.builtin.file:
@@ -30,5 +32,5 @@
   vars:
     systemd_unit_files:
       - item: signal_failure_notify/signal-failure-notify@.service
-        user: "{{ user }}"
+        user: "{{ signal_failure_notify_user }}"
         state: present

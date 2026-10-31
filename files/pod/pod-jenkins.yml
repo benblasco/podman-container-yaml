@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: jenkins
-      #image: docker.io/jenkins/jenkins:lts-jdk17
+      # image: docker.io/jenkins/jenkins:lts-jdk17
       image: docker.io/jenkins/jenkins:rhel-ubi9-jdk25
       # Changed HTTP KeepAlive Timeout to avoid race condition for Jenkins MCP server
       # https://plugins.jenkins.io/mcp-server/
@@ -20,8 +20,8 @@ spec:
       volumeMounts:
         - mountPath: /var/jenkins_home
           name: jenkins-home
-        #- mountPath: /certs/client:ro
-          #name: jenkins-docker-certs
+        # - mountPath: /certs/client:ro
+          # name: jenkins-docker-certs
       env:
         - name: TZ
           value: Australia/Melbourne
@@ -37,6 +37,6 @@ spec:
     - name: jenkins-home
       persistentVolumeClaim:
         claimName: jenkins-home
-    #- name: jenkins-docker-certs
-      #persistentVolumeClaim:
-        #claimName: jenkins-docker-certs
+    # - name: jenkins-docker-certs
+      # persistentVolumeClaim:
+        # claimName: jenkins-docker-certs

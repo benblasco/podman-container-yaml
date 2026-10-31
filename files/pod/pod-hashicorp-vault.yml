@@ -60,13 +60,15 @@ spec:
       persistentVolumeClaim:
         claimName: vault-file
 
-#podman run \
+# podman run \
 #  --name vault \
 #  --rm \
 #  --detach \
 #  --publish 8200:8200 \
 #  --volume vault-logs:/vault/logs \
 #  --volume vault-file:/vault/file \
-#  -e 'VAULT_LOCAL_CONFIG={"backend": {"file": {"path": "/vault/file"}}, "default_lease_ttl": "168h", "max_lease_ttl": "720h", "disable_mlock": "true", "listener": {"tcp": {"address": "0.0.0.0:8200", "tls_disable": "1" }}, "ui": "true"}' \
+#  -e 'VAULT_LOCAL_CONFIG={"backend": {"file": {"path": "/vault/file"}}, \
+#  "default_lease_ttl": "168h", "max_lease_ttl": "720h", "disable_mlock": "true", \
+#  "listener": {"tcp": {"address": "0.0.0.0:8200", "tls_disable": "1" }}, "ui": "true"}' \
 #  --tz=local \
 #  docker.io/hashicorp/vault:latest server

@@ -29,7 +29,9 @@ cp group_vars/all/signal-notify.yml.example group_vars/all/signal-notify.yml  # 
 ansible-playbook -i hosts enable-service-failure-notifications.yml
 ```
 
-Uses the same `signal-notify.yml` variables as [backups-personal](https://github.com/benblasco/backups-personal) (`backups-config.yml`). The playbook targets `micro.lan`, `nuc.lan`, `opti.lan`, and `hex.lan`, and installs handlers for `root` (system), `bblasco`, and `media`.
+Uses the same `signal-notify.yml` variables as [backups-personal](https://github.com/benblasco/backups-personal)
+(`backups-config.yml`). The playbook targets `micro.lan`, `nuc.lan`, `opti.lan`, and `hex.lan`, and installs handlers
+for `root` (system), `bblasco`, and `media`.
 
 To notify on a failed unit, add to that unit’s `[Unit]` section (when you are ready):
 
@@ -37,7 +39,8 @@ To notify on a failed unit, add to that unit’s `[Unit]` section (when you are 
 OnFailure=signal-failure-notify@%n.service
 ```
 
-Per-service `OnFailure=` is added manually on quadlet `.kube` files as needed (e.g. `esphome.kube`); optional templated kube files may follow later.
+Per-service `OnFailure=` is added manually on quadlet `.kube` files as needed (e.g. `esphome.kube`); optional templated
+kube files may follow later.
 
 ### Manual test
 
@@ -49,11 +52,14 @@ MONITOR_UNIT=homepage.service MONITOR_SERVICE_RESULT=exit-code MONITOR_EXIT_STAT
 
 If `signal-api.service` is down, the webhook call fails silently (`curl -sf`).
 
-More API examples: [signal-cli-rest-api EXAMPLES.md](https://github.com/bbernhard/signal-cli-rest-api/blob/master/doc/EXAMPLES.md).
+More API examples: [signal-cli-rest-api EXAMPLES.md](https://github.com/bbernhard/signal-cli-rest-
+api/blob/master/doc/EXAMPLES.md).
 
 ## A note on group creation in Signal and retrieving the Group ID string
 
-If you create a group in the Signal app (e.g. via your phone) and want to send notifications to that group, you will need to synchronise the Signal API container before being able to retrieve the Group ID (which will look something like `group.UjlLNG4wNkpFY2kyc0I2a21oUWpPbU31T1J6QnI4blRxN2t2cnBNTHgvVT0=`).
+If you create a group in the Signal app (e.g. via your phone) and want to send notifications to that group, you will
+need to synchronise the Signal API container before being able to retrieve the Group ID (which will look something like
+`group.UjlLNG4wNkpFY2kyc0I2a21oUWpPbU31T1J6QnI4blRxN2t2cnBNTHgvVT0=`).
 
 Please see Git issue [listGroups not showing new groups
 #1602](https://github.com/AsamK/signal-cli/issues/1602)

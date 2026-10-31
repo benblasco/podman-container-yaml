@@ -27,5 +27,5 @@
       ansible.builtin.include_role:
         name: signal_failure_notify
       vars:
-        user: "{{ item }}"
+        signal_failure_notify_user: "{{ item }}"
       loop: "{{ signal_failure_notify_users }}"

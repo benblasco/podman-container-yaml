@@ -10,7 +10,9 @@ Follow the instructions in requirements.yml to install the relevant Ansible pre-
 
 # Development
 
-Git commits run [pre-commit](https://pre-commit.com/) hooks (YAML, Ansible, kubeconform on `files/pod/`, gitleaks, shellcheck, markdown). **No `dnf install`** — tools use `pip install --user` and pre-commit’s cache under `~/.cache/pre-commit/`. The [`archive/`](archive/) tree is excluded from every hook.
+Git commits run [pre-commit](https://pre-commit.com/) hooks (YAML, Ansible, kubeconform on `files/pod/`, gitleaks,
+shellcheck, markdown). **No `dnf install`** — tools use `pip install --user` and pre-commit’s cache under `~/.cache/pre-
+commit/`. The [`archive/`](archive/) tree is excluded from every hook.
 
 ```bash
 python3 -m pip install --user -r requirements-dev.txt
@@ -21,7 +23,12 @@ pre-commit run --all-files             # first-time / CI-style check
 
 Verify: `pre-commit --version`, `command -v pre-commit`, `ansible-lint --version`.
 
-On first run, kubeconform is downloaded to `~/.cache/pre-commit-tools/` by [`.pre-commit/run-kubeconform.sh`](.pre-commit/run-kubeconform.sh). Ansible-lint uses the `ansible-lint` from your user `pip` install (`language: system` hook).
+Lint config: [`.yamllint.yml`](.yamllint.yml) (120 columns, comment spacing), [`.ansible-lint`](.ansible-lint) (`moderate`;
+`host_vars/` excluded — gitignored secrets), [`.markdownlint-cli2.yaml`](.markdownlint-cli2.yaml) (MD013 on prose, 120
+columns). [`archive/`](archive/) is excluded from every hook.
+
+On first run, kubeconform is downloaded to `~/.cache/pre-commit-tools/` by [`.pre-commit/run-kubeconform.sh`](.pre-
+commit/run-kubeconform.sh). Ansible-lint uses the `ansible-lint` from your user `pip` install (`language: system` hook).
 
 # Use
 
@@ -34,7 +41,8 @@ Execute the playbook by running:
 or similar
 
 Note: if you need to authenticate to the registry for the container, the lazy way via the command line is:
-`ansible-playbook podman-<container name>.yml --ask-become-pass -e podman_registry_username=<username> -e podman_registry_password=<password>`
+`ansible-playbook podman-<container name>.yml --ask-become-pass -e podman_registry_username=<username> -e
+podman_registry_password=<password>`
 
 # Quadlet use
 
@@ -52,7 +60,9 @@ Also great info if you run `man podman-systemd.unit`
 
 # Boot startup stagger
 
-At boot, every enabled Quadlet service is pulled in by `default.target` and tends to start at once. On a host running many pods, that creates a CPU spike that can cause systemd to time out units (default 90s) or exhaust the start-retry limit, leaving services in a `failed` state until someone notices.
+At boot, every enabled Quadlet service is pulled in by `default.target` and tends to start at once. On a host running
+many pods, that creates a CPU spike that can cause systemd to time out units (default 90s) or exhaust the start-retry
+limit, leaving services in a `failed` state until someone notices.
 
 Each `.kube` file in [`files/kube/`](files/kube/) configures three systemd directives to reduce this:
 
@@ -64,7 +74,8 @@ Each `.kube` file in [`files/kube/`](files/kube/) configures three systemd direc
 
 ## Priority tiers
 
-Tier **1** is highest priority (starts earliest); tier **4** is lowest (starts latest). Each `.kube` file includes a `# Boot stagger: Tier N` comment.
+Tier **1** is highest priority (starts earliest); tier **4** is lowest (starts latest). Each `.kube` file includes a `#
+Boot stagger: Tier N` comment.
 
 | Tier | Typical delay | Services |
 |------|---------------|----------|
@@ -100,7 +111,8 @@ Tier **1** is highest priority (starts earliest); tier **4** is lowest (starts l
 | 4 | Rsyslog-server | 240s | 180s |
 | 4 | HashiCorp Vault | 240s | 180s |
 
-To change a service's tier, edit its `.kube` file (tier comment, `RandomizedDelaySec`, and `TimeoutStartSec`), then redeploy with the matching `run-podman-quadlet-*.yml` playbook.
+To change a service's tier, edit its `.kube` file (tier comment, `RandomizedDelaySec`, and `TimeoutStartSec`), then
+redeploy with the matching `run-podman-quadlet-*.yml` playbook.
 
 Verify on a deployed host:
 
@@ -110,7 +122,8 @@ systemctl --user show pihole.service -p RandomizedDelaySec,TimeoutStartSec,Start
 
 # Pod/container healthchecks
 
-All the containers running here have liveness probes configured. You can check the health of the container with a command like:
+All the containers running here have liveness probes configured. You can check the health of the container with a
+command like:
 
 `watch -n 5 "podman inspect <container name> --format='{{json .State.Health}}'"`
 
@@ -124,10 +137,12 @@ You can also check what the currently running health check is via:
 - [ESPHome storage layout and cleanup](README.esphome.md)
 - [Tailscale container authentication key](README.tailscale.md)
 - [Rsyslog server — Red Hat registry credentials](README.rsyslog-server.md)
-- [Signal CLI REST API](README.signal-api.md) (includes [failure notifications](README.signal-api.md#service-failure-notifications) via `enable-service-failure-notifications.yml`)
+- [Signal CLI REST API](README.signal-api.md) (includes [failure notifications](README.signal-api.md#service-failure-
+-   notifications) via `enable-service-failure-notifications.yml`)
 - [Uptime Kuma](README.uptime-kuma.md)
 - [pqc-ssh-server (nuc.lan)](README.pqc-ssh-server.md)
 - [Forgejo and Actions runners](README.forgejo.md)
 - [Jenkins backups](README.jenkins.md)
 - [Docker registry certificates and garbage collection](README.docker-registry.md)
-- [Selective volume backup labeling](README.volume-backup-labeling.md) (design notes; selective labeling not implemented; all named volumes backed up via [backups-personal](https://github.com/benblasco/backups-personal))
+- [Selective volume backup labeling](README.volume-backup-labeling.md) (design notes; selective labeling not
+-   implemented; all named volumes backed up via [backups-personal](https://github.com/benblasco/backups-personal))

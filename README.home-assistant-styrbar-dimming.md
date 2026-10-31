@@ -1,14 +1,18 @@
 # Home Assistant — STYRBAR dimming (Kitchen & Living Room)
 
-Local blueprint forks for IKEA STYRBAR remotes on **micro.lan**. Replaces the Thomas Maxson blueprint (500 ms minimum between dim steps) with basnijholt-style millisecond tick dimming, while keeping arrow buttons mapped to non-dimmable Shelly switches.
+Local blueprint forks for IKEA STYRBAR remotes on **micro.lan**. Replaces the Thomas Maxson blueprint (500 ms minimum
+between dim steps) with basnijholt-style millisecond tick dimming, while keeping arrow buttons mapped to non-dimmable
+Shelly switches.
 
 Upstream: [basnijholt ZHA STYRBAR blueprint](https://gist.github.com/basnijholt/39205a1082f2740a930b437b12db290b)
 
 ## Why forked
 
 - Thomas blueprint `repeat_delay` floor is **500 ms** — hold-to-dim felt sluggish.
-- basnijholt imported unmodified hardcodes arrows to **color temperature** — useless on brightness-only dining/living lights and conflicts with separate kitchen/porch switch automations.
-- **Fork** = copy YAML into `config/blueprints/automation/` and edit locally (imported community blueprints are read-only in HA).
+- basnijholt imported unmodified hardcodes arrows to **color temperature** — useless on brightness-only dining/living
+-   lights and conflicts with separate kitchen/porch switch automations.
+- **Fork** = copy YAML into `config/blueprints/automation/` and edit locally (imported community blueprints are read-
+-   only in HA).
 
 Blueprint sources (also in `~/Projects/home-assistant/blueprints/automation/`):
 
@@ -64,8 +68,10 @@ These automations were **disabled, not deleted**. To revert: disable the fork au
 
 ## Tuning
 
-Adjust `tick_ms` (try 75–150 ms) or `step_pct` in the automation blueprint inputs — no YAML edit needed for those two values.
+Adjust `tick_ms` (try 75–150 ms) or `step_pct` in the automation blueprint inputs — no YAML edit needed for those two
+values.
 
 ## Options not taken
 
-Thomas-only tuning (still 500 ms floor), unmodified basnijholt import, running basnijholt alongside separate arrow automations, or a fully custom non-blueprint automation.
+Thomas-only tuning (still 500 ms floor), unmodified basnijholt import, running basnijholt alongside separate arrow
+automations, or a fully custom non-blueprint automation.

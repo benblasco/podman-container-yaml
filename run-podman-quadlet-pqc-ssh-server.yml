@@ -30,6 +30,7 @@
     - fedora.linux_system_roles.podman
   post_tasks:
     - name: Restart pqc-ssh-server service to apply updated authorized keys
+      become: true
       become_user: bblasco
       ansible.builtin.systemd:
         name: pqc-ssh-server.service

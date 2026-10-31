@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: rsyslog-server
   labels:
-    #io.containers.autoupdate: "registry"
+    # io.containers.autoupdate: "registry"
 spec:
   containers:
     - name: rsyslog-server

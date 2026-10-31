@@ -4,14 +4,11 @@ exclude_paths:
   - archive/
   - .cache/
   - .git/
+  # Gitignored secret host vars (long tokens/options); lint playbooks and *.example instead.
+  - host_vars/
 
 write_list:
   - none
-
-skip_list:
-  - yaml
-  - partial-become
-  - var-naming
 
 warn_list:
   - experimental

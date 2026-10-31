@@ -11,7 +11,8 @@ The dashboard compares two live views of the same data:
 1. **Power Flow Card** — animated flow diagram (similar to the Goodwe app)
 2. **Gauge cards** — numeric dials for the same metrics
 
-The **Energy Dashboard** (`/energy`) uses GoodWe cumulative meters plus GloBird ZeroHero tariff helpers for cost/earnings.
+The **Energy Dashboard** (`/energy`) uses GoodWe cumulative meters plus GloBird ZeroHero tariff helpers for
+cost/earnings.
 
 ### Energy Dashboard entities
 
@@ -29,7 +30,8 @@ The **Energy Dashboard** (`/energy`) uses GoodWe cumulative meters plus GloBird 
 
 **Power Flow Card Plus** uses **split power entities** with positive magnitudes for each direction.
 
-GoodWe sign convention (via Modbus): negative `meter_active_power_l1` = grid **import**, negative `battery_power` = battery **charge**. Template sensors split these into always-positive values for the card.
+GoodWe sign convention (via Modbus): negative `meter_active_power_l1` = grid **import**, negative `battery_power` =
+battery **charge**. Template sensors split these into always-positive values for the card.
 
 | Circle | Consumption entity | Production entity |
 |--------|-------------------|-------------------|
@@ -40,7 +42,9 @@ GoodWe sign convention (via Modbus): negative `meter_active_power_l1` = grid **i
 
 ## Live gauges
 
-Gauge cards show the same live data as the power-flow numbers. Grid and battery gauges use signed GoodWe sensors with the needle at zero (−import/−charge, +export/+discharge). Blue/orange = charge/import (left), green = discharge/export (right).
+Gauge cards show the same live data as the power-flow numbers. Grid and battery gauges use signed GoodWe sensors with
+the needle at zero (−import/−charge, +export/+discharge). Blue/orange = charge/import (left), green = discharge/export
+(right).
 
 ## Status and today
 
@@ -73,9 +77,11 @@ Template helpers switch price by time of day (Melbourne local):
 | Super Export | $0.15 | 18:00–21:00 (approx.; real bill tops up to 15c for first 15 kWh/day) |
 | Other | $0.041 | 21:00–10:00 |
 
-**Not modelled in HA:** daily supply charge ($1.023/day), $1/day ZeroHero credit (grid import < 0.03 kWh/h during 18:00–21:00), ZeroLimits critical-peak credits.
+**Not modelled in HA:** daily supply charge ($1.023/day), $1/day ZeroHero credit (grid import < 0.03 kWh/h during
+18:00–21:00), ZeroLimits critical-peak credits.
 
-Sources: [ZeroHero](https://www.globirdenergy.com.au/energy-saver/zerohero/), [VPP FAQ](https://www.globirdenergy.com.au/help-support/faq-vpp/). Verify rates against your United Energy fact sheet.
+Sources: [ZeroHero](https://www.globirdenergy.com.au/energy-saver/zerohero/), [VPP
+FAQ](https://www.globirdenergy.com.au/help-support/faq-vpp/). Verify rates against your United Energy fact sheet.
 
 Current tariff tiles: `sensor.globird_grid_import_price`, `sensor.globird_solar_export_price`.
 
@@ -119,8 +125,9 @@ This is due to the following bug:
 https://github.com/containers/podman/issues/16741
 
 4. Make the relevant SELinux changes on the system
-	1. You see something like this in /var/log/audit/audit.log: `type=USER_AVC msg=audit(1683117204.775:2041): pid=817 uid=81 auid=4294967295 ses=4294967295 subj=system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 msg='avc:  denied  { send_msg } for  scontext=system_u:system_r:bluetooth_t:s0 tcontext=unconfined_u:system_r:spc_t:s0 tclass=dbus permissive=0 exe="/usr/bin/dbus-broker" sauid=81 hostname=? addr=? terminal=?'UID="dbus" AUID="unset" SAUID="dbus"`
-	2. Check what the issue is:
+    1. You see something like this in `/var/log/audit/audit.log` (AVC denied `send_msg` for bluetooth/dbus; excerpt
+       shortened):
+    2. Check what the issue is:
 ```[root@opti ~]# grep tooth /var/log/audit/audit.log | tail -1 | audit2why
 type=USER_AVC msg=audit(1683117372.225:2274): pid=817 uid=81 auid=4294967295 ses=4294967295 subj=system_u:system_r:system_dbusd_t:s0-s0:c0.c1023 msg='avc:  denied  { send_msg } for  scontext=system_u:system_r:bluetooth_t:s0 tcontext=unconfined_u:system_r:spc_t:s0 tclass=dbus permissive=0 exe="/usr/bin/dbus-broker" sauid=81 hostname=? addr=? terminal=?'UID="dbus" AUID="unset" SAUID="dbus"
 

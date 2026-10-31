@@ -4,9 +4,9 @@ metadata:
   name: transmission
   labels:
     io.containers.autoupdate: "registry"
-  #annotations:
+  # annotations:
     # https://www.redhat.com/en/blog/debug-rootless-podman-mounted-volumes
-    #run.oci.keep_original_groups: 1
+    # run.oci.keep_original_groups: 1
 spec:
   containers:
     - name: transmission
@@ -50,7 +50,7 @@ spec:
       persistentVolumeClaim:
         claimName: transmission-config
     - name: transmission-downloads
-      #volumeMode: Filesystem
+      # volumeMode: Filesystem
       hostPath:
         path: /mnt/sg1/media/torrents
         type: Directory

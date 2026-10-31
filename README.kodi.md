@@ -22,7 +22,8 @@ These are the settings Kodi 21 actually uses (Settings → Services → Caching)
 
 **File:** `/storage/.kodi/userdata/advancedsettings.xml`
 
-Contains cache settings (`buffermode=1`, `memorysize=104857600`, `readfactor=400`). **Kodi 21 ignores cache settings in this file** — kept in place but has no effect.
+Contains cache settings (`buffermode=1`, `memorysize=104857600`, `readfactor=400`). **Kodi 21 ignores cache settings in
+this file** — kept in place but has no effect.
 
 ---
 
@@ -32,6 +33,7 @@ Contains cache settings (`buffermode=1`, `memorysize=104857600`, `readfactor=400
 
 1. Waits 10 seconds after boot
 2. Disables WiFi power save: `iw dev wlan0 set power_save off`
-3. If still on 2.4 GHz (`freq` < 5000 MHz), disconnects and reconnects `eraser215` via ConnMan, then disables power save again
+3. If still on 2.4 GHz (`freq` < 5000 MHz), disconnects and reconnects `eraser215` via ConnMan, then disables power save
+3.   again
 
 ---

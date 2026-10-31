@@ -16,13 +16,14 @@
       # The other directives need to be under
       # the kube file_src else this does not work!
       - template_src: pod/pod-homepage.yml.j2
-      #- file_src: pod/pod-homepage.yml
+      # - file_src: pod/pod-homepage.yml
       - file_src: kube/homepage.kube
         state: started
   roles:
     - fedora.linux_system_roles.podman
   post_tasks:
     - name: Restart homepage service to apply updated config
+      become: true
       become_user: bblasco
       ansible.builtin.systemd:
         name: homepage.service

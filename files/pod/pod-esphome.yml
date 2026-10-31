@@ -8,7 +8,7 @@ metadata:
   labels:
     io.containers.autoupdate: "registry"
 spec:
-  #hostUsers: false
+  # hostUsers: false
   containers:
     - name: esphome
       image: docker.io/esphome/esphome:stable
@@ -28,13 +28,13 @@ spec:
         - name: TZ
           value: Australia/Melbourne
       securityContext:
-        #allowPrivilegeEscalation: true
+        # allowPrivilegeEscalation: true
         capabilities: {}
         privileged: true
         runAsUser: 1000
         runAsGroup: 1000
-        #fsGroup: 1000
-        #fsGroupChangePolicy: "Always"
+        # fsGroup: 1000
+        # fsGroupChangePolicy: "Always"
       livenessProbe:
         httpGet:
           path: /

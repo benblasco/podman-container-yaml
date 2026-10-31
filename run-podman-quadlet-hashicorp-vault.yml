@@ -14,9 +14,9 @@
       # The other directives need to be under
       # the kube file_src else this does not work!
       - file_src: pod/pod-hashicorp-vault.yml
-        #state: absent
+        # state: absent
       - file_src: kube/hashicorp-vault.kube
         state: started
-          #state: absent
+          # state: absent
   roles:
     - fedora.linux_system_roles.podman
