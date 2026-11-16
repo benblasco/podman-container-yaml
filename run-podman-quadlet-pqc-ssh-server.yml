@@ -5,6 +5,8 @@
   vars:
     podman_run_as_user: bblasco
     podman_run_as_group: bblasco
+    pqc_ssh_init_image: registry.access.redhat.com/hi/core-runtime:latest-builder
+    pqc_ssh_server_image: micro.lan:5000/pqc-ssh-server:hardened-images
     pqc_ssh_authorized_keys: "{{ lookup('ansible.builtin.file', pqc_ssh_authorized_keys_file) }}"
     podman_firewall:
       - port: 22222/tcp

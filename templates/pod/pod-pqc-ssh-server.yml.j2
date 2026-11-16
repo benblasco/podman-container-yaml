@@ -8,7 +8,7 @@ metadata:
 spec:
   initContainers:
     - name: prepare-hostkeys
-      image: micro.lan:5000/pqc-ssh-server:latest
+      image: {{ pqc_ssh_init_image }}
       securityContext:
         runAsUser: 0
       command:
@@ -28,7 +28,7 @@ spec:
         - mountPath: /var/lib/sshd
           name: pqc-ssh-hostkeys
     - name: seed-authorized-keys
-      image: micro.lan:5000/pqc-ssh-server:latest
+      image: {{ pqc_ssh_init_image }}
       # Must run as root to chown; do not inherit a non-root USER from the image.
       securityContext:
         runAsUser: 0
@@ -51,9 +51,12 @@ spec:
           name: pqc-ssh-authorized-keys
   containers:
     - name: pqc-ssh-server
-      image: micro.lan:5000/pqc-ssh-server:latest
+      image: {{ pqc_ssh_server_image }}
       securityContext:
         runAsUser: 0
+      command:
+        - /usr/sbin/sshd
+        - -D
       ports:
         - containerPort: 22
           hostPort: 22222
@@ -67,13 +70,9 @@ spec:
       env:
         - name: TZ
           value: Australia/Melbourne
-      livenessProbe:
-        tcpSocket:
-          port: 22
-        initialDelaySeconds: 15
-        periodSeconds: 30
-        timeoutSeconds: 5
-        failureThreshold: 3
+      # No livenessProbe: Podman maps tcpSocket probes to "nc -z localhost PORT", but
+      # minimal pqc-ssh-server images (hardened core-runtime) do not ship nc—probes
+      # always fail and Podman restarts the container every ~90s while sshd still runs.
   volumes:
     - name: pqc-ssh-hostkeys
       persistentVolumeClaim:

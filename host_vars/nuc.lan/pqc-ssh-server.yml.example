@@ -1,6 +1,11 @@
 # Copy to host_vars/nuc.lan/pqc-ssh-server.yml (gitignored).
 # Path on the Ansible control machine (this repo checkout or absolute path).
 pqc_ssh_authorized_keys_file: "{{ playbook_dir }}/files/pqc-ssh-server/nuc.lan-authorized_keys"
+# Init containers (shell + ssh-keygen); override if you mirror on micro.lan:
+# Note that playbook vars will override these vars.
+# pqc_ssh_init_image: micro.lan:5000/hi-core-runtime:latest-builder
+# Main hardened sshd image from homelab registry:
+# pqc_ssh_server_image: micro.lan:5000/pqc-ssh-server:latest
 # Optional if the registry image was built with non-default SSH_UID/SSH_GID:
 # pqc_ssh_uid: 1000
 # pqc_ssh_gid: 1000
