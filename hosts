@@ -16,6 +16,7 @@ opti.lan
 
 [forgejo_runner]
 opti.lan
+hex.lan
 
 [all:vars]
 #ansible_ssh_common_args='-o ProxyCommand="ssh -p 49153 -W %h:%p -q bblasco@eraser215.ddns.net"'
