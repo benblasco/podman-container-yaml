@@ -24,8 +24,8 @@ pre-commit run --all-files             # first-time / CI-style check
 Verify: `pre-commit --version`, `command -v pre-commit`, `ansible-lint --version`.
 
 Lint config: [`.yamllint.yml`](.yamllint.yml) (120 columns, comment spacing), [`.ansible-lint`](.ansible-lint) (`moderate`;
-`host_vars/` excluded — gitignored secrets), [`.markdownlint-cli2.yaml`](.markdownlint-cli2.yaml) (MD013 on prose, 120
-columns). **MD031** / **MD040** require blank lines around fenced blocks and a language tag on each fence.
+`host_vars/` excluded — gitignored secrets), [`.markdownlint-cli2.yaml`](.markdownlint-cli2.yaml) (MD013 disabled). **MD031**
+/ **MD040** require blank lines around fenced blocks and a language tag on each fence.
 
 On first run, kubeconform is downloaded to `~/.cache/pre-commit-tools/` by [`.pre-commit/run-kubeconform.sh`](.pre-
 commit/run-kubeconform.sh). Ansible-lint uses the `ansible-lint` from your user `pip` install (`language: system` hook).
